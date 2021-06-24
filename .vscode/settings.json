@@ -1,0 +1,17 @@
+{
+    "files.associations": {
+        "rtc.h": "c",
+        "system_init.h": "c",
+        "clock_config.h": "c",
+        "ccp.h": "c",
+        "port.h": "c",
+        "compiler.h": "c",
+        "interrupt_avr8.h": "c",
+        "delay.h": "c",
+        "pwm.h": "c",
+        "builtins.h": "c",
+        "io.h": "c",
+        "iotn1606.h": "c"
+    },
+    "C_Cpp.default.includePath": ["./include", "./include/driver", "./utils", "./utils/assembler", "/home/justb/.avr/packs/Atmel.ATtiny_DFP/include", "/usr/lib/avr/include"]
+}
