@@ -17,7 +17,18 @@ The following are a list of dependencies
 4. doxygen
 5. attiny1606 device pack
 
-### Installing
+After the dependencies have been installed and configured (see Installing Dependencies) run the folowing commands after going to the directory where you want the project located.
+
+```
+git clone https://github.com/HBLL-Makerspace/ringlight_firmware_v1.git
+cd ringlight_firmware_v1
+make
+make install
+```
+
+If at any point anything goes wrong review the rest of this REAMDE to understand what is required.
+
+### Installing Dependencies
 
 The following command should install most of what is needed.
 
