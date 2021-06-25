@@ -34,15 +34,29 @@ extern "C" {
 
 #include <compiler.h>
 
+/**
+ * \brief Describes the pullup resistor states.
+ */
 enum port_pull_mode {
-	PORT_PULL_OFF,
-	PORT_PULL_UP,
+	PORT_PULL_OFF, /**< Disable the pullup resistor.*/
+	PORT_PULL_UP, /**< Enable the pullup resistor.*/
 };
 
+/**
+ * \brief Describes the port direction states.
+ * 
+ * There are 3 possible states to condifure every pin on the IC.
+ * 1. INPUT
+ * 2. OUTPUT
+ * 3. FLOATING
+ * 
+ * This enum describes those states to the IC so that it is easier to 
+ * see than using 0x0, 0x1 and 0x2
+ */
 enum port_dir {
-	PORT_DIR_IN,
-	PORT_DIR_OUT,
-	PORT_DIR_OFF,
+	PORT_DIR_IN, /**< Set the port direction to be an input.*/
+	PORT_DIR_OUT, /**< Set the port direction to be an output. */
+	PORT_DIR_OFF, /**< Set the port direction to be floating. */
 };
 
 /**

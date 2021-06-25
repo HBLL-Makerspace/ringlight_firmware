@@ -1,3 +1,8 @@
+/**
+ * \file
+ * \brief Clock configuration for the attiny1606
+ */
+
 /* Auto-generated config file clock_config.h */
 #ifndef CLOCK_CONFIG_H
 #define CLOCK_CONFIG_H

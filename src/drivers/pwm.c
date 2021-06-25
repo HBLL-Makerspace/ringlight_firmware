@@ -30,8 +30,10 @@
 #include <compiler.h>
 
 void PWM_init(void) {
+    // Put TCA into split mode. Gives us 6 sepereate 8-bit timers.
     TCA0.SPLIT.CTRLD = TCA_SPLIT_SPLITM_bm;
     
+    // Disable all the PWM channels by default.
     TCA0.SPLIT.CTRLB = ~TCA_SPLIT_HCMP0EN_bm 
                     | ~TCA_SPLIT_HCMP1EN_bm 
                     | ~TCA_SPLIT_HCMP2EN_bm 
@@ -39,17 +41,21 @@ void PWM_init(void) {
                     | ~TCA_SPLIT_LCMP1EN_bm 
                     | ~TCA_SPLIT_LCMP2EN_bm;
 
+    // Set the period to be max.
     TCA0.SPLIT.LPER = 0xff;
     TCA0.SPLIT.HPER = 0xff;
     
+    // Set the clock division to be 1 oer CPU cycle and disable the TCA.
     TCA0.SPLIT.CTRLA = TCA_SPLIT_CLKSEL_DIV1_gc | ~TCA_SPLIT_ENABLE_bm;
 }
 
 void PWM_enable(void) {
+    // Enable the TCA.
     TCA0.SPLIT.CTRLA |= TCA_SPLIT_ENABLE_bm;
 }
 
 void PWM_disable(void) {
+    // Disable the TCA.
     TCA0.SPLIT.CTRLA &= ~TCA_SPLIT_ENABLE_bm;
 }
 

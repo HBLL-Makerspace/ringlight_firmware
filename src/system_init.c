@@ -1,6 +1,5 @@
 #include <system_init.h>
 #include <driver_init.h>
-#include <ccp.h>
 #include <port.h>
 #include <atomic.h>
 
@@ -31,8 +30,10 @@ void system_init(void) {
 	N_EN_set_level(false);
 	LDAC_set_level(false);
 
+	// Initializes all the drivers.
     driver_init();
 
+	// A lot of the drivers use interrupts, so we are going to assume that interrupts are needed.
 	ENABLE_INTERRUPTS();
 }
 
