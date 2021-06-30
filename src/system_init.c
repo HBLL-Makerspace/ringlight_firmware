@@ -21,6 +21,7 @@ void system_init(void) {
 	V_EN_set_dir(PORT_DIR_OUT);
 	N_EN_set_dir(PORT_DIR_OUT);
 	LDAC_set_dir(PORT_DIR_OUT);
+	TX_set_dir(PORT_DIR_OUT);
 
 	INDICATOR_set_level(false);
 	FS1_set_level(false);
