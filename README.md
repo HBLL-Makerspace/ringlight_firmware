@@ -48,34 +48,6 @@ To configure avrdude to use the jtag2updi programmer the configuration file must
 sudo cp avrdude.conf /usr/local/etc/
 ```
 
-The next step is adding a device pack from microchip. It involves a few more steps and is easy to not get right. The steps are below with a description and a piece of code that will most likely do the trick.
-
-Create a new directory in your home folder called .avr and another one inside called packs
-```
-mkdir -p ~/.avr/packs/
-```
-
-Go into the directory and download the device pack.
-```
-cd ~/.avr/packs
-wget https://packs.download.microchip.com/Microchip.ATtiny_DFP.2.6.122.atpack
-```
-
-Next unzip the downloaded content. You may need to install unzip before running the commnad. It is prety easy just run sudo apt install unzip.
-```
-unzip Microchip.ATtiny_DFP.2.6.122.atpack
-```
-
-Finally remove the zipped file and rename the folder to be 
-```
-rm Microchip.ATtiny_DFP.2.6.122.atpack
-mv Microchip.ATtiny_DFP.2.6.122.atpack Atmel.Attiny_DFP
-```
-
-You should end up with a folder in your home directory that looks like this
-~/.avr/packs/Atmel.ATtiny_DFP/ which contians all the additional build files for the attiny1606 and other chips. If this does not happen there will be errors while building the firmware.
-
-
 ### Optional (LaTeX)
 
 An optional installation is the latex packages. LaTeX is a documentation generation tool for pdfs and other formats. It is used extensivly in industry to create user manuals and the likes. Each LaTeX project consists of a bunch of tex files, which contain a text based lanaguge to describe the docuement. Take a look at one to get a feel for it. The tex files are used to compile a pdf, and is very configurable. The following command will install latex onto a Ubuntu system, it is a very large install so be prepared for it to take longer than ussual.
