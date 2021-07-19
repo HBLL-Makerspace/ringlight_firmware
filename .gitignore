@@ -1,8 +1,9 @@
-# Project Specicif
+# Project Specific
 /build
 /doc
 .vscode
 .vs
+*.bak
 
 # http://www.gnu.org/software/automake
 
