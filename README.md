@@ -15,7 +15,6 @@ The following are a list of dependencies
 2. gcc-avr
 3. avrdude; version 6.3 with additional modifications to get jtag2updi working.
 4. doxygen
-5. attiny1606 device pack
 
 After the dependencies have been installed and configured (see Installing Dependencies) run the folowing commands after going to the directory where you want the project located.
 
@@ -50,7 +49,7 @@ sudo cp avrdude.conf /usr/local/etc/
 
 ### Optional (LaTeX)
 
-An optional installation is the latex packages. LaTeX is a documentation generation tool for pdfs and other formats. It is used extensivly in industry to create user manuals and the likes. Each LaTeX project consists of a bunch of tex files, which contain a text based lanaguge to describe the docuement. Take a look at one to get a feel for it. The tex files are used to compile a pdf, and is very configurable. The following command will install latex onto a Ubuntu system, it is a very large install so be prepared for it to take longer than ussual.
+An optional installation is the latex packages. LaTeX is a documentation generation tool for pdfs and other formats. It is used in industry to create user manuals and getting started pdf's. Each LaTeX project consists of a bunch of tex files, which contain a text based lanaguge to describe the docuement. Take a look at one to get a feel for it. The tex files are used to compile a pdf, and is very configurable. The following command will install latex onto a Ubuntu system, it is a very large install so be prepared for it to take longer than ussual.
 
 ```
 sudo apt install texlive-full
