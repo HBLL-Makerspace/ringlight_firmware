@@ -37,7 +37,9 @@ sudo apt install build-essesntial python3 gcc-avr avrdude dyoxygen
 
 You can also compile and install most of these libraries from scratch from there respective websites. A simple google search will get you started on any one of those. The build essesntial package contains many programs that are useful to building code in a linux environemnt. It contains programs like make and gcc, we are only interested in make, since this build environment uses make to build the firmware code. For make to work it needs a Makefile which contains instructions for how to build and install the firmware. Some adjustments might need to be made to the Makefile to get everything working as expected. The Makefile also contians targets for building the documentation using dyoxygen. Dyoxygen will create two directories in the doc folder, an html and latex folder. The html folder contains a static website that has all the documentation inside, while the latex folder contains all the latex files to generate a latex docuement. See the optional section for more information on latex.
 
-### Configure
+### Configure (No longer required)
+
+Note: This is no longer required, the makefile has been updated to accept the configuration file in the repo as the configuration file for avrdude. There is no need to update the local configuration file as long as the installed avrdude version is the same that is specified in the installtion section.
 
 There are a couple of additional configurations to do to avrdude and adding a device pack before the project will compile. The programmer that I use is an Arduino nano programmed as a jtag2updi interface. Check out these projects to get something similar set up https://github.com/ElTangas/jtag2updi, https://github.com/SpenceKonde/AVR-Guidance/blob/master/UPDI/jtag2updi.md
 

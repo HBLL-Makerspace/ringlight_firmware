@@ -111,7 +111,7 @@ doc:
 # Uses a custom configuration of avrdude
 .PHONY: install
 install:
-	avrdude -p tiny1607 -c jtag2updi -U flash:w:$(BUILD_DIR)/$(TARGET).hex
+	avrdude -C avrdude.conf -p t1607 -c jtag2updi -U flash:w:$(BUILD_DIR)/$(TARGET).hex
 
 # generate disassembly files for debugging
 disasm: pre $(BUILD_DIR)/$(TARGET).elf
