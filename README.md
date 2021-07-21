@@ -13,14 +13,14 @@ This project requires several components to work as expected. The following guid
 The following are a list of dependencies
 1. build-essential; make, python3 etc
 2. gcc-avr
-3. avrdude; version 6.3 with additional modifications to get jtag2updi working.
+3. avrdude; version 6.3
 4. doxygen
 
 After the dependencies have been installed and configured (see Installing Dependencies) run the folowing commands after going to the directory where you want the project located.
 
 ```
-git clone https://github.com/HBLL-Makerspace/ringlight_firmware_v1.git
-cd ringlight_firmware_v1
+git clone https://github.com/HBLL-Makerspace/ringlight_firmware.git
+cd ringlight_firmware
 make
 make install
 ```
