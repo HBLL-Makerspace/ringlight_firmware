@@ -61,7 +61,7 @@
 #include <avr/io.h>
 #include <avr/builtins.h>
 #ifndef _AVR_IOXXX_H_
-#include <avr/iotn1606.h>
+#include <avr/iotn1607.h>
 #endif
 #elif defined(__ICCAVR__)
 #define ENABLE_BIT_DEFINITIONS 1
