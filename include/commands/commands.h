@@ -20,10 +20,10 @@
 #include<stdint.h>
 #include<stdlib.h>
 
-#define CMD_SET_CHN_COLOR 0x01
-#define CMD_SET_CHN_INTENSITY 0x00
-#define CMD_GET_CHN_COLOR 0x00
-#define CMD_GET_CHN_INTENSITY 0x00
+#define CMD_SET_CHN_COLOR_ID 0x01
+#define CMD_SET_CHN_INTENSITY_ID 0x02
+#define CMD_GET_CHN_COLOR_ID 0xa1
+#define CMD_GET_CHN_INTENSITY_ID 0xa2
 
 /**
  * \class
@@ -56,8 +56,8 @@ typedef struct Command {
      * \retval true Was able to get all information
      * \retval false Failed to get all information
      */
-    uint8_t (*processCommand) (uint8_t* data);
-};
+    uint8_t (*process) (uint8_t* data);
+} Command;
 
 /**
  * \brief Gets the command struct based on the id
@@ -71,14 +71,6 @@ typedef struct Command {
  * \retval Pointer Found command
  * \retval \c NULL Failed to find the command with specified id
  */
-Command* command_get_from_id(uint8_t id) {
-    switch (id)
-    {
-    case 0x00:
-        return NULL;
-    default:
-        return NULL;
-    }
-}
+const Command* command_get_from_id(uint8_t id);
 
 #endif

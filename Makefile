@@ -21,10 +21,10 @@ INCLUDE_DIR:=include
 
 # AVR-GCC, flags copy and dump stuff
 CC:=avr-gcc
-CFLAGS:= -Wall -Werror -mmcu=$(DEVICE) -DF_CPU=$(CLOCK) -Os -B $(DEVICE_PACK)/gcc/dev/$(DEVICE)/ -I $(DEVICE_PACK)/include/ -I $(INCLUDE_DIR)
+CFLAGS:= -Wall -Wno-unused -Werror -mmcu=$(DEVICE) -DF_CPU=$(CLOCK) -Os -B $(DEVICE_PACK)/gcc/dev/$(DEVICE)/ -I $(DEVICE_PACK)/include/ -I $(INCLUDE_DIR)
 OBJCOPY:=avr-objcopy
 OBJDUMP:=avr-objdump
-SIZE:=avr-size --format=avr --mcu=$(MCU)
+SIZE:=avr-size --format=avr --mcu=$(DEVICE)
 
 # Builds the hex file
 .PHONY: all
@@ -33,8 +33,10 @@ all: pre $(BUILD_DIR)/$(TARGET).hex
 # Creates elf file then hex file
 $(BUILD_DIR)/$(TARGET).hex: $(BUILD_DIR)/$(TARGET).elf
 	@echo Creating hex file
-	$(OBJCOPY) -j .text -j .data -O ihex $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex
-	$(SIZE) $(BUILD_DIR)/$(TARGET).elf
+	$(OBJCOPY) -O ihex -R .eeprom -R .fuse -R .lock -R .signature -R .user_signatures $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex
+	$(OBJCOPY) -j .eeprom  --set-section-flags=.eeprom=alloc,load --change-section-lma .eeprom=0  --no-change-warnings -O ihex $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).eep
+	@echo 
+	$(SIZE) --totals $(BUILD_DIR)/$(TARGET).elf
 
 $(BUILD_DIR)/$(TARGET).elf: $(OBJS)
 	@echo Linking...
@@ -115,5 +117,8 @@ install:
 
 # generate disassembly files for debugging
 disasm: pre $(BUILD_DIR)/$(TARGET).elf
-	$(OBJDUMP) -d $(BUILD_DIR)/$(TARGET).elf > $(BUILD_DIR)/$(TARGET).disasm.s
+	$(OBJDUMP) -d -j .text -j .data -j .rodata -j .eeprom $(BUILD_DIR)/$(TARGET).elf > $(BUILD_DIR)/$(TARGET).disasm.s
+
+# Makes all the targets for debugging, assembly files and dissasembly
+debug: pre asm disasm
 
