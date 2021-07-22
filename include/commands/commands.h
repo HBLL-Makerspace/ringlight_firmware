@@ -25,6 +25,8 @@
 #define CMD_GET_CHN_COLOR_ID 0xa1
 #define CMD_GET_CHN_INTENSITY_ID 0xa2
 
+#define CMD_RETURN 0xff // Return command
+
 /**
  * \class
  * \brief Command class

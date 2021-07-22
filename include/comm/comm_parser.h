@@ -8,13 +8,11 @@
 extern "C" {
 #endif
 
-uint8_t cp_parse(uint8_t);
+uint8_t comm_parser_parse(uint8_t);
 
-uint8_t cp_get_frame();
+comm_frame comm_parser_get_frame();
 
-uint8_t cp_is_frame_available();
-
-uint8_t cp_send_ack();
+uint8_t comm_parser_is_frame_available();
 
 #ifdef __cplusplus 
 }
