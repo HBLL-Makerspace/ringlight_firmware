@@ -1,27 +1,45 @@
+#include<math.h>
 #include<stdint.h>
 
+#include<drivers/pwm.h>
 #include<controllers/channel_ctrl.h>
+#include<drivers/ws2812.h>
 
 #define MAX_NUM_CHANNELS 3
+#define MAX_BRIGHTNESS_INPUT 255
+#define A_VAL 0.5
+#define P_MAX 15.9687194227 // Pmax = Smax ^ a;
+
+#define NUMPIXELS      24
+#define LEDS_PER_GROUP 4
+#define NUMBER_GROUPS 6
+#define DEGREE_SPACING 43
+
+/*
+ * There is 18 times more light per level of the white LED's verses the ws2812b leds. 
+ */
 
 static Channel channels[MAX_NUM_CHANNELS] = {
     {
         .r = 0,
         .g = 0,
         .b = 0,
-        .intensity = 0
+        .intensity = 0,
+        .pwm_ctrl = PWM_set_duty_cycle_ch5
     },
     {
         .r = 0,
         .g = 0,
         .b = 0,
-        .intensity = 0
+        .intensity = 0,
+        .pwm_ctrl = PWM_set_duty_cycle_ch4
     },
     {
         .r = 0,
         .g = 0,
         .b = 0,
-        .intensity = 0
+        .intensity = 0,
+        .pwm_ctrl = PWM_set_duty_cycle_ch3
     }
 };
 
@@ -30,6 +48,14 @@ void chn_ctrl_init() {
     channels[0].b = 0xff;
     channels[0].g = 0xff;
     channels[0].intensity = 0xff;
+
+    PWM_enable();
+	PWM_enable_ch3();
+	PWM_enable_ch4();
+	PWM_enable_ch5();
+
+    WS2812_init(WS2812_GRB, NUMBER_GROUPS * LEDS_PER_GROUP, &PORTA.OUT, PIN6_bp);
+    chn_ctrl_update_leds();
 }
 
 void chn_ctrl_set_channel_color(uint8_t channel, uint32_t color) {
@@ -95,8 +121,33 @@ void chn_ctrl_set_channel_intesity(uint8_t channel, uint8_t intensity) {
     }
 }
 
+static uint8_t chn_ctrl_pwr_level(uint8_t power) {
+    return (uint8_t)(pow(P_MAX * ((float)power/(float)255), 1/A_VAL) + 0.5);
+}
+
+static void chn_ctrl_update_chn(uint8_t channel) {
+    if (channel < MAX_NUM_CHANNELS) {
+        Channel chn = channels[channel];
+        chn.pwm_ctrl(chn_ctrl_pwr_level(chn.intensity));
+        uint8_t r = chn.r;
+        uint8_t g = chn.g;
+        uint8_t b = chn.b;
+
+        uint8_t start = LEDS_PER_GROUP * channel;
+        for (uint8_t i = 0; i < LEDS_PER_GROUP; i++) {
+            WS2812_set_pixel_color_RGB(start + i, r, g, b);
+        }
+
+        start = LEDS_PER_GROUP * channel + (MAX_NUM_CHANNELS * LEDS_PER_GROUP);
+        for (uint8_t i = 0; i < LEDS_PER_GROUP; i++) {
+            WS2812_set_pixel_color_RGB(start + i, r, g, b);
+        }
+    }
+}
+
 void chn_ctrl_update_leds() {
     for (uint8_t i = 0; i < MAX_NUM_CHANNELS; i++) {
-
+        chn_ctrl_update_chn(i);
     }
+    WS2812_show();
 }

@@ -35,7 +35,7 @@ void system_init(void) {
 
 	// Initializes all the drivers.
     driver_init();
-    chn_ctrl_init();
+    // chn_ctrl_init();
 
 	// A lot of the drivers use interrupts, so we are going to assume that interrupts are needed.
 	ENABLE_INTERRUPTS();

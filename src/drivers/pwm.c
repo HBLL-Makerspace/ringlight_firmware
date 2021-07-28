@@ -42,8 +42,8 @@ void PWM_init(void) {
     //                 | ~TCA_SPLIT_LCMP2EN_bm;
 
     // Set the period to be max.
-    TCA0.SPLIT.LPER = 0xff;
-    TCA0.SPLIT.HPER = 0xff;
+    TCA0.SPLIT.LPER = 0x80;
+    TCA0.SPLIT.HPER = 0x80;
     
     // Set the clock division to be 1 oer CPU cycle and disable the TCA.
     TCA0.SPLIT.CTRLA = TCA_SPLIT_CLKSEL_DIV1_gc | ~TCA_SPLIT_ENABLE_bm;
@@ -109,25 +109,25 @@ void PWM_disable_ch5(void) {
 }
 
 void PWM_set_duty_cycle_ch0(uint8_t duty) {
-    TCA0.SPLIT.LCMP0 = duty;
+    TCA0.SPLIT.LCMP0 = duty >> 1;
 }
 
 void PWM_set_duty_cycle_ch1(uint8_t duty) {
-    TCA0.SPLIT.LCMP1 = duty;
+    TCA0.SPLIT.LCMP1 = duty >> 1;
 }
 
 void PWM_set_duty_cycle_ch2(uint8_t duty) {
-    TCA0.SPLIT.LCMP2 = duty;
+    TCA0.SPLIT.LCMP2 = duty >> 1;
 }
 
 void PWM_set_duty_cycle_ch3(uint8_t duty) {
-    TCA0.SPLIT.HCMP0 = duty;
+    TCA0.SPLIT.HCMP0 = duty >> 1;
 }
 
 void PWM_set_duty_cycle_ch4(uint8_t duty) {
-    TCA0.SPLIT.HCMP1 = duty;
+    TCA0.SPLIT.HCMP1 = duty >> 1;
 }
 
 void PWM_set_duty_cycle_ch5(uint8_t duty) {
-    TCA0.SPLIT.HCMP2 = duty;
+    TCA0.SPLIT.HCMP2 = duty >> 1;
 }
