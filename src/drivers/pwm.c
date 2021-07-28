@@ -34,12 +34,12 @@ void PWM_init(void) {
     TCA0.SPLIT.CTRLD = TCA_SPLIT_SPLITM_bm;
     
     // Disable all the PWM channels by default.
-    TCA0.SPLIT.CTRLB = ~TCA_SPLIT_HCMP0EN_bm 
-                    | ~TCA_SPLIT_HCMP1EN_bm 
-                    | ~TCA_SPLIT_HCMP2EN_bm 
-                    | ~TCA_SPLIT_LCMP0EN_bm 
-                    | ~TCA_SPLIT_LCMP1EN_bm 
-                    | ~TCA_SPLIT_LCMP2EN_bm;
+    // TCA0.SPLIT.CTRLB = ~TCA_SPLIT_HCMP0EN_bm 
+    //                 | ~TCA_SPLIT_HCMP1EN_bm 
+    //                 | ~TCA_SPLIT_HCMP2EN_bm 
+    //                 | ~TCA_SPLIT_LCMP0EN_bm 
+    //                 | ~TCA_SPLIT_LCMP1EN_bm 
+    //                 | ~TCA_SPLIT_LCMP2EN_bm;
 
     // Set the period to be max.
     TCA0.SPLIT.LPER = 0xff;
@@ -47,6 +47,7 @@ void PWM_init(void) {
     
     // Set the clock division to be 1 oer CPU cycle and disable the TCA.
     TCA0.SPLIT.CTRLA = TCA_SPLIT_CLKSEL_DIV1_gc | ~TCA_SPLIT_ENABLE_bm;
+    PORTMUX_CTRLC = PORTMUX_TCA03_bm | PORTMUX_TCA04_bm | PORTMUX_TCA05_bm;
 }
 
 void PWM_enable(void) {

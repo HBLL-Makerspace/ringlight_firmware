@@ -2,6 +2,7 @@
 #include <driver_init.h>
 #include <port.h>
 #include <atomic.h>
+#include<controllers/channel_ctrl.h>
 
 void system_init(void) {
     system_mcu_init();
@@ -17,23 +18,24 @@ void system_init(void) {
 	INDICATOR_set_dir(PORT_DIR_OUT);
 	FS1_set_dir(PORT_DIR_OUT);
 	FS2_set_dir(PORT_DIR_OUT);
-	H_EN_set_dir(PORT_DIR_OUT);
-	V_EN_set_dir(PORT_DIR_OUT);
-	N_EN_set_dir(PORT_DIR_OUT);
-	LDAC_set_dir(PORT_DIR_OUT);
+	CHN_0_set_dir(PORT_DIR_OUT);
+	CHN_1_set_dir(PORT_DIR_OUT);
+	CHN_2_set_dir(PORT_DIR_OUT);
 	TX_set_dir(PORT_DIR_OUT);
 	RX_set_dir(PORT_DIR_IN);
+    TEMP_SENSOR_set_dir(PORT_DIR_IN);
+    CLED_CTRL_set_dir(PORT_DIR_OUT);
 
 	INDICATOR_set_level(false);
 	FS1_set_level(false);
 	FS2_set_level(false);
-	H_EN_set_level(false);
-	V_EN_set_level(false);
-	N_EN_set_level(false);
-	LDAC_set_level(false);
+	CHN_0_set_level(false);
+	CHN_1_set_level(false);
+	CHN_2_set_level(false);
 
 	// Initializes all the drivers.
     driver_init();
+    chn_ctrl_init();
 
 	// A lot of the drivers use interrupts, so we are going to assume that interrupts are needed.
 	ENABLE_INTERRUPTS();

@@ -21,7 +21,7 @@ INCLUDE_DIR:=include
 
 # AVR-GCC, flags copy and dump stuff
 CC:=avr-gcc
-CFLAGS:= -Wall -Wno-unused -Werror -mmcu=$(DEVICE) -DF_CPU=$(CLOCK) -Os -B $(DEVICE_PACK)/gcc/dev/$(DEVICE)/ -I $(DEVICE_PACK)/include/ -I $(INCLUDE_DIR)
+CFLAGS:= -Wall -Wno-unused -Werror -Wno-discarded-qualifiers -mmcu=$(DEVICE) -DF_CPU=$(CLOCK) -Os -B $(DEVICE_PACK)/gcc/dev/$(DEVICE)/ -I $(DEVICE_PACK)/include/ -I $(INCLUDE_DIR)
 OBJCOPY:=avr-objcopy
 OBJDUMP:=avr-objdump
 SIZE:=avr-size --format=avr --mcu=$(DEVICE)
@@ -112,12 +112,12 @@ doc:
 # Flashes the hex file onto the attiny1607
 # Uses a custom configuration of avrdude
 .PHONY: install
-install:
-	avrdude -C avrdude.conf -p t1607 -c jtag2updi -U flash:w:$(BUILD_DIR)/$(TARGET).hex
+install: pre $(BUILD_DIR)/$(TARGET).hex
+	avrdude -C avrdude.conf -p t1607 -c jtag2updi -P /dev/ttyUSB0 -U flash:w:$(BUILD_DIR)/$(TARGET).hex
 
 # generate disassembly files for debugging
 disasm: pre $(BUILD_DIR)/$(TARGET).elf
-	$(OBJDUMP) -d -j .text -j .data -j .rodata -j .eeprom $(BUILD_DIR)/$(TARGET).elf > $(BUILD_DIR)/$(TARGET).disasm.s
+	$(OBJDUMP) -d -j .text -j .data -j .rodata -j .eeprom -j .bss $(BUILD_DIR)/$(TARGET).elf > $(BUILD_DIR)/$(TARGET).disasm.s
 
 # Makes all the targets for debugging, assembly files and dissasembly
 debug: pre asm disasm
