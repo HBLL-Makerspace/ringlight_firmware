@@ -37,6 +37,10 @@ int main(void) {
     // chn_ctrl_set_channel_intesity(1, 100);
     // chn_ctrl_set_channel_intesity(2, 100);
 
+    // chn_ctrl_set_channel_intesity(0, 0);
+    // chn_ctrl_set_channel_intesity(1, 0);
+    // chn_ctrl_set_channel_intesity(2, 0);
+
     // _delay_ms(500);
 
     // for (uint8_t i = 0; i < NUMPIXELS; i ++) {
@@ -47,6 +51,17 @@ int main(void) {
     FS2_set_level(true);
 
 	while(1) {
+
+        // _delay_ms(2000);
+        // chn_ctrl_set_channel_intesity(0, 255);
+        // chn_ctrl_set_channel_intesity(1, 255);
+        // chn_ctrl_set_channel_intesity(2, 255);
+        // _delay_ms(10);
+        // chn_ctrl_set_channel_intesity(0, 0);
+        // chn_ctrl_set_channel_intesity(1, 0);
+        // chn_ctrl_set_channel_intesity(2, 0);
+        // _delay_ms(2000);
+
 
         // FS2_set_level(true);
         // _delay_ms(2000);
@@ -61,16 +76,16 @@ int main(void) {
 
         // ws2812_run_all_tests(NUMBER_GROUPS, LEDS_PER_GROUP, DEGREE_SPACING);
 
-        // static uint8_t count = 0;
-        // // PWM_set_duty_cycle_ch5(count);
-        // chn_ctrl_set_channel_intesity(0, count);
-        // chn_ctrl_set_channel_intesity(1, count);
-        // chn_ctrl_set_channel_intesity(2, count);
-        // _delay_ms(500);
-        // count++;
-        // if (count >= 255) {
-        //     count = 0;
-        // }
+        static uint8_t count = 0;
+        // PWM_set_duty_cycle_ch5(count);
+        chn_ctrl_set_channel_intesity(0, count);
+        chn_ctrl_set_channel_intesity(1, count);
+        chn_ctrl_set_channel_intesity(2, count);
+        _delay_ms(50);
+        count++;
+        if (count >= 255) {
+            count = 0;
+        }
 
         // TX_set_dir(PORT_DIR_OUT);
         // TX_set_level(true);
@@ -99,6 +114,21 @@ int main(void) {
         // FS1_set_level(false);
         // _delay_ms(1000);
         // _delay_ms(500);
+
+        // printf("Hello\n");
+        // USART_write('h');
+
+        // uint8_t c = USART_read();
+        // USART_write(c);
+        // chn_ctrl_set_channel_intesity(0, 20);
+        // chn_ctrl_set_channel_intesity(1, 20);
+        // chn_ctrl_set_channel_intesity(2, 20);
+        // _delay_ms(1000);
+        // chn_ctrl_set_channel_intesity(0, 0);
+        // chn_ctrl_set_channel_intesity(1, 0);
+        // chn_ctrl_set_channel_intesity(2, 0);
+
+
 	}
 
 	return 0;

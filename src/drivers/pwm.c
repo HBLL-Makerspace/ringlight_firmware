@@ -29,6 +29,16 @@
 #include <drivers/pwm.h>
 #include <compiler.h>
 
+static uint8_t UPDATE_PWM_LOW = 0;
+static uint8_t UPDATE_PWM_HIGH = 0;
+
+static uint8_t PWM_0 = 0;
+static uint8_t PWM_1 = 0;
+static uint8_t PWM_2 = 0;
+static uint8_t PWM_3 = 0;
+static uint8_t PWM_4 = 0;
+static uint8_t PWM_5 = 0;
+
 void PWM_init(void) {
     // Put TCA into split mode. Gives us 6 sepereate 8-bit timers.
     TCA0.SPLIT.CTRLD = TCA_SPLIT_SPLITM_bm;
@@ -48,6 +58,8 @@ void PWM_init(void) {
     // Set the clock division to be 1 oer CPU cycle and disable the TCA.
     TCA0.SPLIT.CTRLA = TCA_SPLIT_CLKSEL_DIV1_gc | ~TCA_SPLIT_ENABLE_bm;
     PORTMUX_CTRLC = PORTMUX_TCA03_bm | PORTMUX_TCA04_bm | PORTMUX_TCA05_bm;
+
+    TCA0.SPLIT.INTCTRL = TCA_SPLIT_LUNF_bm | TCA_SPLIT_HUNF_bm;
 }
 
 void PWM_enable(void) {
@@ -109,25 +121,51 @@ void PWM_disable_ch5(void) {
 }
 
 void PWM_set_duty_cycle_ch0(uint8_t duty) {
-    TCA0.SPLIT.LCMP0 = duty >> 1;
+    UPDATE_PWM_LOW = 1;
+    PWM_0 = duty;
 }
 
 void PWM_set_duty_cycle_ch1(uint8_t duty) {
-    TCA0.SPLIT.LCMP1 = duty >> 1;
+    UPDATE_PWM_LOW = 1;
+    PWM_1 = duty;
 }
 
 void PWM_set_duty_cycle_ch2(uint8_t duty) {
-    TCA0.SPLIT.LCMP2 = duty >> 1;
+    UPDATE_PWM_LOW = 1;
+    PWM_2 = duty;
 }
 
 void PWM_set_duty_cycle_ch3(uint8_t duty) {
-    TCA0.SPLIT.HCMP0 = duty >> 1;
+    UPDATE_PWM_HIGH = 1;
+    PWM_3 = duty;
 }
 
 void PWM_set_duty_cycle_ch4(uint8_t duty) {
-    TCA0.SPLIT.HCMP1 = duty >> 1;
+    UPDATE_PWM_HIGH = 1;
+    PWM_4 = duty;
 }
 
 void PWM_set_duty_cycle_ch5(uint8_t duty) {
-    TCA0.SPLIT.HCMP2 = duty >> 1;
+    UPDATE_PWM_HIGH = 1;
+    PWM_5 = duty;
+}
+
+ISR(TCA0_LUNF_vect) {
+    if (UPDATE_PWM_LOW) {
+        TCA0.SPLIT.LCMP0 = PWM_0 >> 1;
+        TCA0.SPLIT.LCMP1 = PWM_1 >> 1;
+        TCA0.SPLIT.LCMP2 = PWM_2 >> 1;
+        UPDATE_PWM_LOW = 0;
+    }
+    TCA0.SPLIT.INTFLAGS = TCA_SPLIT_LUNF_bm;
+}
+
+ISR(TCA0_HUNF_vect) {
+    if (UPDATE_PWM_HIGH) {
+        TCA0.SPLIT.HCMP0 = PWM_3 >> 1;
+        TCA0.SPLIT.HCMP1 = PWM_4 >> 1;
+        TCA0.SPLIT.HCMP2 = PWM_5 >> 1;
+        UPDATE_PWM_HIGH = 0;
+    }
+    TCA0.SPLIT.INTFLAGS = TCA_SPLIT_HUNF_bm;
 }
