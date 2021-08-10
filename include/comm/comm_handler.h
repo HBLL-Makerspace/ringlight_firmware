@@ -12,6 +12,8 @@ uint8_t comm_handler_send_frame(comm_frame frame);
 uint8_t comm_handler_recieve_frame();
 comm_frame comm_handler_get_frame();
 uint8_t comm_handler_send_ack();
+uint8_t comm_handler_tick();
+uint8_t comm_handler_did_receive_frame();
 
 #ifdef __cplusplus
 }

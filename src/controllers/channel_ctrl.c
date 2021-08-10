@@ -1,6 +1,8 @@
 #include<math.h>
 #include<stdint.h>
 
+#include<utils/utils.h>
+
 #include<drivers/pwm.h>
 #include<controllers/channel_ctrl.h>
 #include<drivers/ws2812.h>
@@ -10,9 +12,9 @@
 #define A_VAL 0.5
 #define P_MAX 15.9687194227 // Pmax = Smax ^ a;
 
-#define NUMPIXELS      24
+#define NUMPIXELS      12
 #define LEDS_PER_GROUP 4
-#define NUMBER_GROUPS 6
+#define NUMBER_GROUPS 3
 #define DEGREE_SPACING 43
 
 /*
@@ -25,7 +27,7 @@ static Channel channels[MAX_NUM_CHANNELS] = {
         .g = 0,
         .b = 0,
         .intensity = 0,
-        .pwm_ctrl = PWM_set_duty_cycle_ch5
+        .pwm_ctrl = PWM_set_duty_cycle_ch3
     },
     {
         .r = 0,
@@ -39,16 +41,11 @@ static Channel channels[MAX_NUM_CHANNELS] = {
         .g = 0,
         .b = 0,
         .intensity = 0,
-        .pwm_ctrl = PWM_set_duty_cycle_ch3
+        .pwm_ctrl = PWM_set_duty_cycle_ch5
     }
 };
 
 void chn_ctrl_init() {
-    channels[0].r = 0xff;
-    channels[0].b = 0xff;
-    channels[0].g = 0xff;
-    channels[0].intensity = 0xff;
-
     PWM_enable();
 	PWM_enable_ch3();
 	PWM_enable_ch4();
@@ -60,13 +57,10 @@ void chn_ctrl_init() {
 
 void chn_ctrl_set_channel_color(uint8_t channel, uint32_t color) {
     if (channel < MAX_NUM_CHANNELS) {
-        channels[channel].intensity = color && 0xff;
-        color = color >> 8;
-        channels[channel].b = color && 0xff;
-        color = color >> 8;
-        channels[channel].g = color && 0xff;
-        color = color >> 8;
-        channels[channel].r = color && 0xff;
+        channels[channel].r = color >> 24;
+        channels[channel].g = color >> 16;
+        channels[channel].b = color >> 8;
+        channels[channel].intensity = color;
         chn_ctrl_update_leds();
     }
 }
@@ -117,7 +111,7 @@ uint8_t chn_ctrl_get_channel_color_v(uint8_t channel) {return 0;}
 void chn_ctrl_set_channel_intesity(uint8_t channel, uint8_t intensity) {
     if (channel < MAX_NUM_CHANNELS) {
         channels[channel].intensity = intensity;
-        chn_ctrl_update_leds();
+        chn_ctrl_update_leds(true);
     }
 }
 
@@ -128,20 +122,32 @@ static uint8_t chn_ctrl_pwr_level(uint8_t power) {
 static void chn_ctrl_update_chn(uint8_t channel) {
     if (channel < MAX_NUM_CHANNELS) {
         Channel chn = channels[channel];
-        chn.pwm_ctrl(chn_ctrl_pwr_level(chn.intensity));
         uint8_t r = chn.r;
         uint8_t g = chn.g;
         uint8_t b = chn.b;
+
+        uint8_t white = minu8(r, g);
+        white = minu8(g, b);
+
+        if (white < 50) {
+            white = 0;
+        }
+
+        r -= white;
+        g -= white;
+        b -= white;
+
+        chn.pwm_ctrl(chn_ctrl_pwr_level(white >> 2));
 
         uint8_t start = LEDS_PER_GROUP * channel;
         for (uint8_t i = 0; i < LEDS_PER_GROUP; i++) {
             WS2812_set_pixel_color_RGB(start + i, r, g, b);
         }
 
-        start = LEDS_PER_GROUP * channel + (MAX_NUM_CHANNELS * LEDS_PER_GROUP);
-        for (uint8_t i = 0; i < LEDS_PER_GROUP; i++) {
-            WS2812_set_pixel_color_RGB(start + i, r, g, b);
-        }
+        // start = LEDS_PER_GROUP * channel + (MAX_NUM_CHANNELS * LEDS`_PER_GROUP);
+        // for (uint8_t i = 0; i < LEDS_PER_GROUP; i++) {
+        //     WS2812_set_pixel_color_RGB(start + i, r, g, b);
+        // }
     }
 }
 

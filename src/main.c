@@ -7,15 +7,16 @@
 #include<drivers/usart.h>
 #include<utils/ws2812_test_suite.h>
 #include<controllers/channel_ctrl.h>
+#include<utils/chn_ctrl_test_suite.h>
 
 #include<drivers/ws2812.h>
 
 #include<stdio.h>
 #include<util/delay.h>
 
-#define NUMPIXELS      24
+#define NUMPIXELS      12
 #define LEDS_PER_GROUP 4
-#define NUMBER_GROUPS 6
+#define NUMBER_GROUPS 3
 #define DEGREE_SPACING 43
 
 
@@ -23,7 +24,7 @@ int main(void) {
 	system_init();
 	RTC_enable_heartbeat();
 
-    // WS2812_init(WS2812_GRB, LEDS_PER_GROUP * 6, &PORTA.OUT, PIN6_bp);
+    // WS2812_init(WS2812_GRB, LEDS_PER_GROUP * NUMBER_GROUPS, &PORTA.OUT, PIN6_bp);
 
     // _delay_ms(500);
 
@@ -44,13 +45,17 @@ int main(void) {
     // _delay_ms(500);
 
     // for (uint8_t i = 0; i < NUMPIXELS; i ++) {
-    //     WS2812_set_pixel_color_RGB(i, 5, 10, 1);
+    //     WS2812_set_pixel_color_RGB(i, 255, 0, 0);
     // }
+
+    // WS2812_show();
 
     FS1_set_level(true);
     FS2_set_level(true);
 
 	while(1) {
+
+        chn_ctrl_test_suite_run_all();
 
         // _delay_ms(2000);
         // chn_ctrl_set_channel_intesity(0, 255);
@@ -76,16 +81,24 @@ int main(void) {
 
         // ws2812_run_all_tests(NUMBER_GROUPS, LEDS_PER_GROUP, DEGREE_SPACING);
 
-        static uint8_t count = 0;
-        // PWM_set_duty_cycle_ch5(count);
-        chn_ctrl_set_channel_intesity(0, count);
-        chn_ctrl_set_channel_intesity(1, count);
-        chn_ctrl_set_channel_intesity(2, count);
-        _delay_ms(50);
-        count++;
-        if (count >= 255) {
-            count = 0;
-        }
+        // WS2812_show();
+
+        // for(uint8_t i = 255; i > 0; i--) {
+        //     chn_ctrl_set_channel_intesity(0, i);
+        //     chn_ctrl_set_channel_intesity(1, i);
+        //     chn_ctrl_set_channel_intesity(2, i);
+        //     _delay_ms(50);
+        // }
+        // static uint8_t count = 0;
+        // // PWM_set_duty_cycle_ch5(count);
+        // chn_ctrl_set_channel_intesity(0, count);
+        // chn_ctrl_set_channel_intesity(1, count);
+        // chn_ctrl_set_channel_intesity(2, count);
+        // _delay_ms(1);
+        // count++;
+        // if (count >= 255) {
+        //     count = 0;
+        // }
 
         // TX_set_dir(PORT_DIR_OUT);
         // TX_set_level(true);

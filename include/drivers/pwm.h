@@ -11,6 +11,15 @@
  * To use the PMW driver follow the below code. The below code shows the steps neede to
  * initialize the driver, enable the pwm driver and then create a pwm signal with a 50%
  * duty cycle.
+ * 
+ * The duty cycle is not updated immediatley when the function is called. Instead a variable
+ * is set and a update flag is also set. Once the timer has reached the bottom an intterupt
+ * is called and then the duty values are updated. This prevents flickering in the pwm waveform
+ * when the duty is updated in the middle of a count. Basically it prevents an update to the
+ * duty cycle from making the waveform have an incorrect pwm value. To understand how this works
+ * better see the buffer sections on the TCA0 timer in the datasheet, this will mimick that
+ * functionality.
+ * 
  * \code
  * ENABLE_INTERRUPTS();
  * PWM_init();

@@ -53,7 +53,7 @@ typedef struct comm_frame {
    * Makes sure that everything was trasnfered correctly by calculating the checksum.
    */
   uint8_t checksum;
-};
+} comm_frame;
 
 #ifdef __cplusplus
 }
