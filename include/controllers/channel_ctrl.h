@@ -19,6 +19,7 @@
 #define CHANNEL_CONTROLLER_H__
 
 #include<stdint.h>
+#include<stdbool.h>
 
 #ifdef __cplusplus
 extern "C" {

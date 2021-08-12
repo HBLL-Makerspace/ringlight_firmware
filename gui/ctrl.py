@@ -1,5 +1,5 @@
 from PyQt5 import QtWidgets, QtGui
-from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QWidget, QAction, QTabWidget,QVBoxLayout, QGroupBox, QLabel, QTextEdit, QLineEdit, QComboBox, QHBoxLayout, QSizePolicy, QStyleFactory, QPlainTextEdit, QSpinBox, QColorDialog, QFrame, QSpacerItem, QSlider
+from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QWidget, QAction, QTabWidget,QVBoxLayout, QGroupBox, QLabel, QTextEdit, QLineEdit, QComboBox, QHBoxLayout, QSizePolicy, QStyleFactory, QPlainTextEdit, QSpinBox, QColorDialog, QFrame, QSpacerItem, QSlider, QCheckBox
 from PyQt5.QtGui import QIcon, QColor
 from PyQt5.QtCore import *
 import sys
@@ -119,6 +119,10 @@ class RLConfigureGroup(QGroupBox, Observer):
         self.properties.addWidget(self.intensity)
         self.properties.addStretch(1)
 
+        self.useWhite = QCheckBox("Use white lights")
+        self.useWhite.stateChanged.connect(self.toggle_use_white)
+        self.properties.addWidget(self.useWhite)
+
         self.layout.addLayout(self.colorLayout)
         self.layout.addLayout(self.properties)
         self.setLayout(self.layout)
@@ -137,6 +141,10 @@ class RLConfigureGroup(QGroupBox, Observer):
     
     def toggle_shutter_btn(self):
         self.state.updateShutter(self.state.selectedRingLight, self.shutter_button.isChecked())
+
+    def toggle_use_white(self):
+        self.state.updateUseWhite(self.state.selectedRingLight, self.state.selectedChannel, self.useWhite.isChecked())
+        # print(self.state.useWhite)
 
     def update(self, state):
         # if self.selectedrl is not state.selectedRingLight:
@@ -179,6 +187,8 @@ class RLConfigureGroup(QGroupBox, Observer):
             self.shutter_button.setStyleSheet("background-color: lightgrey")
             self.shutter_button.setText("Enable Shutter")
             self.shutter_button.setChecked(False)
+
+        self.useWhite.setChecked(self.state.useWhite[self.state.selectedRingLight][self.state.selectedChannel])
 
 class RLSelect(QGroupBox, Observer):
     def __init__(self, parent, state: AppState):

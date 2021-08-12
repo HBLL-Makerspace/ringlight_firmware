@@ -25,7 +25,16 @@ uint8_t comm_handler_did_receive_frame() {
 }
 
 uint8_t comm_handler_tick() {
-    if (USART_is_rx_ready())
+    static uint16_t timeout = 1;
+
+    if (USART_is_rx_ready()) {
         comm_parser_parse(USART_read());
+        timeout = 1;
+    }
+    else
+        timeout++;
+
+    if (timeout == 0)
+        comm_parser_timeout();
     return 0;
 }

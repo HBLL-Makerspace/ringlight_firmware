@@ -23,6 +23,10 @@ comm_frame comm_parser_get_frame();
 
 uint8_t comm_parser_is_frame_available();
 
+void destory_frame(comm_frame frame);
+
+void comm_parser_timeout();
+
 #ifdef __cplusplus 
 }
 #endif

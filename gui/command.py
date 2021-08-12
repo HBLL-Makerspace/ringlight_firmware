@@ -1,4 +1,5 @@
-SET_CHANNEL_RGBI_ID = 0x0a
+SET_CHANNEL_RGBI_ID = 0x02
+SET_CHANNEL_W_ID = 0x03
 
 class Command:
     def __init__(self, id, cmd, data):
@@ -16,12 +17,18 @@ class Command:
         self.data = data
 
     def command_to_binary(self):
-        cmd = [self.id, self.cmd]
+        cmd = [0xff, self.id, self.cmd]
         for i in self.data:
             cmd.append(i)
+        cmd.append(0x00);
+        cmd.append(0x00);
         return cmd
 
 
 class CmdSetChannelRGB(Command):
     def __init__(self, id, channel, r, g, b):
         super().__init__(id, SET_CHANNEL_RGBI_ID, [channel, r, g, b])
+
+class CmdSetChannelW(Command):
+    def __init__(self, id, channel, w):
+        super().__init__(id, SET_CHANNEL_W_ID, [channel, w])
