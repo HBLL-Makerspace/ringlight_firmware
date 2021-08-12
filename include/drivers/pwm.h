@@ -164,7 +164,7 @@ void PWM_disable_ch3(void);
  * 
  * \return \c void
  */
-void PWM_disbale_ch4(void);
+void PWM_disable_ch4(void);
 
 /**
  * \brief Disables channel 5

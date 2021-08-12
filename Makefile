@@ -122,3 +122,6 @@ disasm: pre $(BUILD_DIR)/$(TARGET).elf
 # Makes all the targets for debugging, assembly files and dissasembly
 debug: pre asm disasm
 
+.PHONY: gui
+gui: 
+	python3 gui/ctrl.py

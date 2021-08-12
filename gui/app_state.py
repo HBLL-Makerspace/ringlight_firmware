@@ -2,6 +2,7 @@ from observer import Observer, Subject
 from typing import List
 from PyQt5 import QtCore, QtWidgets, QtSerialPort
 from PyQt5.QtGui import QColor
+from command import *
 
 class TerminalSubject(Subject):
     """
@@ -9,18 +10,17 @@ class TerminalSubject(Subject):
     changes.
     """
 
-    _isConnected: bool = False
-    _port: str = None
-    _new_line: str = None
-    _observers: List[Observer] = []
-    _serial_port = None
     """
     List of subscribers. In real life, the list of subscribers can be stored
     more comprehensively (categorized by event type, etc.).
     """
 
     def __init__(self):
-        self.numRingLights = 0
+        self._isConnected: bool = False
+        self._port: str = None
+        self._new_line: str = None
+        self._observers: List[Observer] = []
+        self._serial_port = None
 
     def attach(self, observer: Observer) -> None:
         print("Terminal: Attached observer: " + observer.__str__())
@@ -71,14 +71,21 @@ class TerminalSubject(Subject):
         self._isConnected = False
         self.notify()
 
+    def write(self, data):
+        print(data)
+        self._serial_port.write(data)
+        self._serial_port.flush()
+
 class AppState(Subject):
     terminal: TerminalSubject = TerminalSubject()
     def __init__(self):
         self.numRingLights = 0
         self.selectedRingLight = 0
+        self.selectedChannel = 0
+        self.numChannels = 3
         self.observers = []
         self.numRingLights
-        self.colors = [None]
+        self.colors = [[QColor(0, 0, 0)]]
         self.intensity = [None]
         self.shutter_enabled = [None]
         self.focus_enabled = [None]
@@ -91,19 +98,29 @@ class AppState(Subject):
 
     def updateNumRingLights(self, numRingLights):
         self.numRingLights = numRingLights
-        self.colors = [None] * numRingLights
-        self.intensity = [None] * numRingLights
-        self.focus_enabled = [False] * numRingLights
-        self.shutter_enabled = [False] * numRingLights
+        self.colors = [[QColor(0, 0, 0) for i in range(self.numChannels)] for j in range(self.numRingLights)]
+        self.intensity = [100 for j in range(self.numRingLights)]
+        self.focus_enabled = [False for j in range(self.numRingLights)]
+        self.shutter_enabled = [False for j in range(self.numRingLights)]
         self.notify()
 
     def updateSelectedRingLight(self, num):
         self.selectedRingLight = num
         self.notify()
 
-    def updateRingLightColor(self, ringlight_id: int, color: QColor):
-        self.colors[ringlight_id] = color
+    def updateSelectedChannel(self, num):
+        self.selectedChannel = num
         self.notify()
+
+    def updateRingLightColor(self, ringlight_id: int, channel_index: int, color: QColor):
+        self.colors[ringlight_id][channel_index] = color
+        self.notify()
+        # for i in range(self.numRingLights):
+        #     for j in range(self.numChannels):
+        #         colorP = self.colors[i][j]
+        #         print(str(colorP.name()), end=", ")
+        #     print()
+
 
     def updateIntensity(self, ringlight_id: int, intensity: int):
         self.intensity[ringlight_id] = intensity
@@ -117,7 +134,16 @@ class AppState(Subject):
         self.shutter_enabled[ringlight_id] = shutter
         self.notify()
 
+    def sendCommand(self, cmd: Command):
+        for i in cmd.command_to_binary():
+            obj = "" + chr(i)
+            self.terminal.write(obj.encode())
+        # print(cmd.command_to_binary())
+
     def sendDataSelected(self):
+        color = self.colors[self.selectedRingLight][self.selectedChannel]
+        cmd = CmdSetChannelRGB(self.selectedRingLight, self.selectedChannel, color.red(), color.green(), color.blue())
+        self.sendCommand(cmd)
         print("Sending data to ringlight")
 
     def sendDataAll(self):
@@ -133,9 +159,33 @@ class AppState(Subject):
             self.colors[x] = color
             self.focus_enabled[x] = focus_enabled
             self.shutter_enabled[x] = shutter_enabled
-            self.intensity[x] = intensity
         
         self.notify()
+
+    def copy_to_all_chns(self, ringlight_id: int, channel: int):
+        color = self.colors[ringlight_id][channel]
+        for x in range(self.numChannels):
+            self.colors[ringlight_id][x] = color
+            
+    
+    def reset_channel(self, ringlight_id: int, channel: int, notify = True):
+        self.colors[ringlight_id][channel] = QColor(0, 0, 0)
+        if notify:
+            self.notify()
+
+    def reset_ring_light(self, ringlight_id: int):
+        for i in range(self.numChannels):
+            self.reset_channel(ringlight_id, i, notify=False)
+        
+        self.intensity[ringlight_id] = 100
+        self.shutter_enabled[ringlight_id] = False
+        self.focus_enabled[ringlight_id] = False
+        self.notify()
+
+    def reset(self):
+        for i in range(self.numRingLights):
+            self.reset_ring_light(i)
+
 
     def notify(self) -> None:
         """

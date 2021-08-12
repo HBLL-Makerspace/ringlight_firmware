@@ -4,7 +4,7 @@
 #include<controllers/channel_ctrl.h>
 #include<utils/chn_ctrl_test_suite.h>
 
-#define LOOP_DELAY 2
+#define LOOP_DELAY 5
 
 static void chn_ctrl_ramp_red(uint8_t chn) {
     for(uint8_t i = 0; i < 255; i++) {
@@ -36,6 +36,14 @@ static void chn_ctrl_ramp_white(uint8_t chn) {
         _delay_ms(LOOP_DELAY);
     }
     chn_ctrl_set_channel_color_rgb(chn, 0, 0, 0);
+}
+
+static void chn_ctrl_ramp_major_white(uint8_t chn) {
+    for(uint8_t i = 0; i < 255; i++) {
+        chn_ctrl_set_channel_color_w(chn, i);
+        _delay_ms(LOOP_DELAY);
+    }
+    chn_ctrl_set_channel_color_w(chn, 0);
 }
 
 static uint32_t chn_ctrl_RGBW(uint8_t r, uint8_t g, uint8_t b, uint8_t w) {
@@ -75,82 +83,89 @@ void chn_ctrl_test_suite_run_all() {
     chn_ctrl_ramp_green(0);
     chn_ctrl_ramp_blue(0);
     chn_ctrl_ramp_white(0);
+    chn_ctrl_ramp_major_white(0);
 
     chn_ctrl_ramp_red(1);
     chn_ctrl_ramp_green(1);
     chn_ctrl_ramp_blue(1);
     chn_ctrl_ramp_white(1);
+    chn_ctrl_ramp_major_white(1);
 
     chn_ctrl_ramp_red(2);
     chn_ctrl_ramp_green(2);
     chn_ctrl_ramp_blue(2);
     chn_ctrl_ramp_white(2);
+    chn_ctrl_ramp_major_white(2);
 
-    chn_ctrl_ramp_with_rainbow(0);
-    chn_ctrl_ramp_with_rainbow(1);
-    chn_ctrl_ramp_with_rainbow(2);
+    // chn_ctrl_ramp_with_rainbow(0);
+    // chn_ctrl_ramp_with_rainbow(1);
+    // chn_ctrl_ramp_with_rainbow(2);
 
-    chn_ctrl_set_channel_color(0, 0x768f23ff);
-    chn_ctrl_set_channel_color(1, 0x768f23ff);
-    chn_ctrl_set_channel_color(2, 0x768f23ff);
-    _delay_ms(1000);
+    // chn_ctrl_set_channel_color(0, 0x768f23ff);
+    // chn_ctrl_set_channel_color(1, 0x768f23ff);
+    // chn_ctrl_set_channel_color(2, 0x768f23ff);
+    // _delay_ms(1000);
 
-    chn_ctrl_set_channel_color(0, 0x7d9826ff);
-    chn_ctrl_set_channel_color(1, 0x7d9826ff);
-    chn_ctrl_set_channel_color(2, 0x7d9826ff);
-    _delay_ms(1000);
+    // chn_ctrl_set_channel_color(0, 0x7d9826ff);
+    // chn_ctrl_set_channel_color(1, 0x7d9826ff);
+    // chn_ctrl_set_channel_color(2, 0x7d9826ff);
+    // _delay_ms(1000);
 
-    chn_ctrl_set_channel_color(0, 0x88a529ff);
-    chn_ctrl_set_channel_color(1, 0x88a529ff);
-    chn_ctrl_set_channel_color(2, 0x88a529ff);
-    _delay_ms(1000);
+    // chn_ctrl_set_channel_color(0, 0x88a529ff);
+    // chn_ctrl_set_channel_color(1, 0x88a529ff);
+    // chn_ctrl_set_channel_color(2, 0x88a529ff);
+    // _delay_ms(1000);
 
-    chn_ctrl_set_channel_color(0, 0x97b72dff);
-    chn_ctrl_set_channel_color(1, 0x97b72dff);
-    chn_ctrl_set_channel_color(2, 0x97b72dff);
-    _delay_ms(1000);
+    // chn_ctrl_set_channel_color(0, 0x97b72dff);
+    // chn_ctrl_set_channel_color(1, 0x97b72dff);
+    // chn_ctrl_set_channel_color(2, 0x97b72dff);
+    // _delay_ms(1000);
 
-    chn_ctrl_set_channel_color(0, 0xa4c731ff);
-    chn_ctrl_set_channel_color(1, 0xa4c731ff);
-    chn_ctrl_set_channel_color(2, 0xa4c731ff);
-    _delay_ms(1000);
+    // chn_ctrl_set_channel_color(0, 0xa4c731ff);
+    // chn_ctrl_set_channel_color(1, 0xa4c731ff);
+    // chn_ctrl_set_channel_color(2, 0xa4c731ff);
+    // _delay_ms(1000);
 
-    chn_ctrl_set_channel_color(0, 0xadcf3dff);
-    chn_ctrl_set_channel_color(1, 0xadcf3dff);
-    chn_ctrl_set_channel_color(2, 0xadcf3dff);
-    _delay_ms(1000);
+    // chn_ctrl_set_channel_color(0, 0xadcf3dff);
+    // chn_ctrl_set_channel_color(1, 0xadcf3dff);
+    // chn_ctrl_set_channel_color(2, 0xadcf3dff);
+    // _delay_ms(1000);
 
-    chn_ctrl_set_channel_color(0, 0xb5d450ff);
-    chn_ctrl_set_channel_color(1, 0xb5d450ff);
-    chn_ctrl_set_channel_color(2, 0xb5d450ff);
-    _delay_ms(1000);
+    // chn_ctrl_set_channel_color(0, 0xb5d450ff);
+    // chn_ctrl_set_channel_color(1, 0xb5d450ff);
+    // chn_ctrl_set_channel_color(2, 0xb5d450ff);
+    // _delay_ms(1000);
 
-    chn_ctrl_set_channel_color(0, 0xbfd967ff);
-    chn_ctrl_set_channel_color(1, 0xbfd967ff);
-    chn_ctrl_set_channel_color(2, 0xbfd967ff);
-    _delay_ms(1000);
+    // chn_ctrl_set_channel_color(0, 0xbfd967ff);
+    // chn_ctrl_set_channel_color(1, 0xbfd967ff);
+    // chn_ctrl_set_channel_color(2, 0xbfd967ff);
+    // _delay_ms(1000);
 
-    chn_ctrl_set_channel_color(0, 0xc8df7cff);
-    chn_ctrl_set_channel_color(1, 0xc8df7cff);
-    chn_ctrl_set_channel_color(2, 0xc8df7cff);
-    _delay_ms(1000);
+    // chn_ctrl_set_channel_color(0, 0xc8df7cff);
+    // chn_ctrl_set_channel_color(1, 0xc8df7cff);
+    // chn_ctrl_set_channel_color(2, 0xc8df7cff);
+    // _delay_ms(1000);
 
-    chn_ctrl_set_channel_color(0, 0xd9e9a4ff);
-    chn_ctrl_set_channel_color(1, 0xd9e9a4ff);
-    chn_ctrl_set_channel_color(2, 0xd9e9a4ff);
-    _delay_ms(1000);
+    // chn_ctrl_set_channel_color(0, 0xd9e9a4ff);
+    // chn_ctrl_set_channel_color(1, 0xd9e9a4ff);
+    // chn_ctrl_set_channel_color(2, 0xd9e9a4ff);
+    // _delay_ms(1000);
 
-    chn_ctrl_set_channel_color(0, 0xeef5d6ff);
-    chn_ctrl_set_channel_color(1, 0xeef5d6ff);
-    chn_ctrl_set_channel_color(2, 0xeef5d6ff);
-    _delay_ms(1000);
+    // chn_ctrl_set_channel_color(0, 0xeef5d6ff);
+    // chn_ctrl_set_channel_color(1, 0xeef5d6ff);
+    // chn_ctrl_set_channel_color(2, 0xeef5d6ff);
+    // _delay_ms(1000);
 
-    chn_ctrl_set_channel_color(0, 0xff929bff);
-    chn_ctrl_set_channel_color(1, 0xff929bff);
-    chn_ctrl_set_channel_color(2, 0xff929bff);
-    _delay_ms(5);
-    chn_ctrl_set_channel_color(0, 0xff929bff);
-    chn_ctrl_set_channel_color(1, 0xff929bff);
-    chn_ctrl_set_channel_color(2, 0xff929bff);
-    _delay_ms(10000);
+    // chn_ctrl_set_channel_color(0, 0xff929bff);
+    // chn_ctrl_set_channel_color(1, 0xff929bff);
+    // chn_ctrl_set_channel_color(2, 0xff929bff);
+    // _delay_ms(5);
+    // chn_ctrl_set_channel_color(0, 0xff929bff);
+    // chn_ctrl_set_channel_color(1, 0xff929bff);
+    // chn_ctrl_set_channel_color(2, 0xff929bff);
+    // _delay_ms(1000);
+
+    chn_ctrl_set_channel_color(0, 0x00000000);
+    chn_ctrl_set_channel_color(1, 0x00000000);
+    chn_ctrl_set_channel_color(2, 0x00000000);
 }

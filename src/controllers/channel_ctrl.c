@@ -4,8 +4,9 @@
 #include<utils/utils.h>
 
 #include<drivers/pwm.h>
-#include<controllers/channel_ctrl.h>
+#include<port.h>
 #include<drivers/ws2812.h>
+#include<controllers/channel_ctrl.h>
 
 #define MAX_NUM_CHANNELS 3
 #define MAX_BRIGHTNESS_INPUT 255
@@ -27,21 +28,30 @@ static Channel channels[MAX_NUM_CHANNELS] = {
         .g = 0,
         .b = 0,
         .intensity = 0,
-        .pwm_ctrl = PWM_set_duty_cycle_ch3
+        .pwm_set_duty = PWM_set_duty_cycle_ch3,
+        .pwm_enable = PWM_enable_ch3,
+        .pwm_disable = PWM_disable_ch3,
+        .chn_set_level = CHN_0_set_level
     },
     {
         .r = 0,
         .g = 0,
         .b = 0,
         .intensity = 0,
-        .pwm_ctrl = PWM_set_duty_cycle_ch4
+        .pwm_set_duty = PWM_set_duty_cycle_ch4,
+        .pwm_enable = PWM_enable_ch4,
+        .pwm_disable = PWM_disable_ch4,
+        .chn_set_level = CHN_1_set_level
     },
     {
         .r = 0,
         .g = 0,
         .b = 0,
         .intensity = 0,
-        .pwm_ctrl = PWM_set_duty_cycle_ch5
+        .pwm_set_duty = PWM_set_duty_cycle_ch5,
+        .pwm_enable = PWM_enable_ch5,
+        .pwm_disable = PWM_disable_ch5,
+        .chn_set_level = CHN_2_set_level
     }
 };
 
@@ -60,7 +70,7 @@ void chn_ctrl_set_channel_color(uint8_t channel, uint32_t color) {
         channels[channel].r = color >> 24;
         channels[channel].g = color >> 16;
         channels[channel].b = color >> 8;
-        channels[channel].intensity = color;
+        channels[channel].w = color;
         chn_ctrl_update_leds();
     }
 }
@@ -70,6 +80,23 @@ void chn_ctrl_set_channel_color_rgb(uint8_t channel, uint8_t r, uint8_t g, uint8
         channels[channel].r = r;
         channels[channel].g = g;
         channels[channel].b = b;
+        chn_ctrl_update_leds();
+    }
+}
+
+void chn_ctrl_set_channel_color_rgbw(uint8_t channel, uint8_t r, uint8_t g, uint8_t b, uint8_t w) {
+    if (channel < MAX_NUM_CHANNELS) {
+        channels[channel].r = r;
+        channels[channel].g = g;
+        channels[channel].b = b;
+        channels[channel].w = w;
+        chn_ctrl_update_leds();
+    }
+}
+
+void chn_ctrl_set_channel_color_w(uint8_t channel, uint8_t w) {
+    if (channel < MAX_NUM_CHANNELS) {
+        channels[channel].w = w;
         chn_ctrl_update_leds();
     }
 }
@@ -125,29 +152,21 @@ static void chn_ctrl_update_chn(uint8_t channel) {
         uint8_t r = chn.r;
         uint8_t g = chn.g;
         uint8_t b = chn.b;
+        uint8_t w = chn.w;
 
-        uint8_t white = minu8(r, g);
-        white = minu8(g, b);
-
-        if (white < 50) {
-            white = 0;
+        if (w == 255) {
+            chn.pwm_disable();
+            chn.chn_set_level(true);
+        } else {
+            chn.chn_set_level(false);
+            chn.pwm_enable();
+            chn.pwm_set_duty(w);
         }
-
-        r -= white;
-        g -= white;
-        b -= white;
-
-        chn.pwm_ctrl(chn_ctrl_pwr_level(white >> 2));
 
         uint8_t start = LEDS_PER_GROUP * channel;
         for (uint8_t i = 0; i < LEDS_PER_GROUP; i++) {
             WS2812_set_pixel_color_RGB(start + i, r, g, b);
         }
-
-        // start = LEDS_PER_GROUP * channel + (MAX_NUM_CHANNELS * LEDS`_PER_GROUP);
-        // for (uint8_t i = 0; i < LEDS_PER_GROUP; i++) {
-        //     WS2812_set_pixel_color_RGB(start + i, r, g, b);
-        // }
     }
 }
 

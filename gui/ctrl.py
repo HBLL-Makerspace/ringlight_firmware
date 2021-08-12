@@ -75,7 +75,7 @@ class RLConfigureGroup(QGroupBox, Observer):
 
         self.frame = QFrame()
         self.frame.resize(10, 10)
-        color = self.state.colors[self.state.selectedRingLight]
+        color = self.state.colors[self.state.selectedRingLight][self.state.selectedChannel]
         if color is None:
             color = QColor(0, 0, 0)
         self.frame.setStyleSheet("QWidget { background-color: %s }" % color.name())
@@ -127,7 +127,7 @@ class RLConfigureGroup(QGroupBox, Observer):
         self.selectedColor = QColorDialog.getColor()
         if self.selectedColor.isValid():
             self.frame.setStyleSheet("QWidget { background-color: %s }" % self.selectedColor.name())
-            self.state.updateRingLightColor(self.state.selectedRingLight, self.selectedColor)
+            self.state.updateRingLightColor(self.state.selectedRingLight, self.state.selectedChannel, self.selectedColor)
 
     def updateIntensity(self):
         self.state.updateIntensity(self.state.selectedRingLight, self.intensity.value())
@@ -139,12 +139,12 @@ class RLConfigureGroup(QGroupBox, Observer):
         self.state.updateShutter(self.state.selectedRingLight, self.shutter_button.isChecked())
 
     def update(self, state):
-        if self.selectedrl is not state.selectedRingLight:
-            self.selectedrl = state.selectedRingLight
-            self.selectedColor = self.state.colors[self.state.selectedRingLight]
-            if self.selectedColor is None:
-                self.selectedColor = QColor(0, 0, 0)
-            self.frame.setStyleSheet("QWidget { background-color: %s }" % self.selectedColor.name())
+        # if self.selectedrl is not state.selectedRingLight:
+        #     self.selectedrl = state.selectedRingLight
+        selectedColor = self.state.colors[self.state.selectedRingLight][self.state.selectedChannel]
+        if selectedColor is None:
+            selectedColor = QColor(0, 0, 0)
+        self.frame.setStyleSheet("QWidget { background-color: %s }" % selectedColor.name())
         
         if self.intensity_val != self.state.intensity[self.state.selectedRingLight]:
             self.intensity_val = self.state.intensity[self.state.selectedRingLight]
@@ -183,19 +183,59 @@ class RLConfigureGroup(QGroupBox, Observer):
 class RLSelect(QGroupBox, Observer):
     def __init__(self, parent, state: AppState):
         super(QWidget, self).__init__("Select Ring Light")
+        self.nmrl = 0
+        self.state = state
         state.attach(self)
-        self.layout = QHBoxLayout(self)
-        self.ring_lights_cb = QComboBox(self)
-        self.ring_lights_cb.currentIndexChanged.connect(self.updateSelectedRingLight)
-        self.layout.addWidget(self.ring_lights_cb)
+        self.layout = QVBoxLayout(self)
 
-        self.copy = QPushButton("Copy to All", self)
+        self.ring_lights_cb = QComboBox()
+        self.ring_lights_cb.currentIndexChanged.connect(self.updateSelectedRingLight)
+
+        self.copy = QPushButton("Copy to all Ring Lights", self)
         self.copy.clicked.connect(self.copy_to_all)
-        self.layout.addWidget(self.copy)
+        self.srl_row = QHBoxLayout()
+        self.srl_row.addWidget(self.ring_lights_cb)
+        self.srl_row.addWidget(self.copy)
+        self.reset_rl = QPushButton("Reset Ring Light", self)
+        self.reset_rl.clicked.connect(self.resetRingLight)
+        self.srl_row.addWidget(self.reset_rl)
+        self.layout.addLayout(self.srl_row)
+
+        self.ring_lights_chn_cb = QComboBox()
+        self.ring_lights_chn_cb.currentIndexChanged.connect(self.updateSelectedChannel)
+        for x in range(self.state.numChannels):
+            self.ring_lights_chn_cb.addItem(str(x))
+
+        self.copy_chn = QPushButton("Copy to all channels", self)
+        self.copy_chn.clicked.connect(self.copy_to_all_chns)
+        self.schn_row = QHBoxLayout()
+        self.schn_row.addWidget(self.ring_lights_chn_cb)
+        self.schn_row.addWidget(self.copy_chn)
+        self.reset_chn = QPushButton("Reset Channel", self)
+        self.reset_chn.clicked.connect(self.resetChannel)
+        self.schn_row.addWidget(self.reset_chn)
+        self.layout.addLayout(self.schn_row)
+
+        self.reset = QPushButton("Reset All", self)
+        self.reset.clicked.connect(self.reset_all)
+        self.layout.addWidget(self.reset)
 
         self.setLayout(self.layout)
-        self.state = state
-        self.nmrl = 0
+
+    def reset_all(self):
+        self.state.reset()
+
+    def updateSelectedChannel(self, i):
+        self.state.updateSelectedChannel(int(i))
+
+    def resetChannel(self):
+        self.state.reset_channel(self.state.selectedRingLight, self.state.selectedChannel)
+
+    def resetRingLight(self):
+        self.state.reset_ring_light(self.state.selectedRingLight)
+
+    def copy_to_all_chns(self):
+        self.state.copy_to_all_chns(self.state.selectedRingLight, self.state.selectedChannel)
 
     def copy_to_all(self):
         self.state.copy_to_all(self.state.selectedRingLight)

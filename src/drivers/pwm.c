@@ -112,7 +112,7 @@ void PWM_disable_ch3(void) {
     TCA0.SPLIT.CTRLB &= ~TCA_SPLIT_HCMP0EN_bm;
 }
 
-void PWM_disbale_ch4(void) {
+void PWM_disable_ch4(void) {
     TCA0.SPLIT.CTRLB &= ~TCA_SPLIT_HCMP1EN_bm;
 }
 

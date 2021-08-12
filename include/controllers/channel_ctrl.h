@@ -35,8 +35,12 @@ typedef struct Channel {
     uint8_t r;
     uint8_t g;
     uint8_t b;
+    uint8_t w;
     uint8_t intensity;
-    void (*pwm_ctrl)(uint8_t);
+    void (*pwm_set_duty)(uint8_t);
+    void (*pwm_enable)();
+    void (*pwm_disable)();
+    void (*chn_set_level)(const bool);
 } Channel;
 
 /**
@@ -65,6 +69,27 @@ void chn_ctrl_set_channel_color(uint8_t channel, uint32_t color);
  * \param [in] b Blue value of color.
  */
 void chn_ctrl_set_channel_color_rgb(uint8_t channel, uint8_t r, uint8_t g, uint8_t b);
+
+/**
+ * \brief Sets the channel color with white.
+ * 
+ * Sets the channel color to with the defined rgb values.
+ * \param [in] channel The channel to set the color on
+ * \param [in] r Red value of color.
+ * \param [in] g Green value of color.
+ * \param [in] b Blue value of color.
+ * \param [in] w White value of color.
+ */
+void chn_ctrl_set_channel_color_rgbw(uint8_t channel, uint8_t r, uint8_t g, uint8_t b, uint8_t w);
+
+/**
+ * \brief Sets the channel white color.
+ * 
+ * Sets the channel color to with the defined rgb values.
+ * \param [in] channel The channel to set the color on
+ * \param [in] w White value of color.
+ */
+void chn_ctrl_set_channel_color_w(uint8_t channel, uint8_t w);
 
 /**
  * \brief Sets the channel color.

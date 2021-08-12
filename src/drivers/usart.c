@@ -27,7 +27,7 @@ int putchar(int outChar)
 #endif
 
 void USART_init(void) {
-    USART0.BAUD = (uint16_t)USART_BAUD_RATE(115200);
+    USART0.BAUD = (uint16_t)USART_BAUD_RATE(9600);
     USART0.CTRLB = 0 << USART_MPCM_bp
                     | 0 << USART_ODME_bp
                     | 1 << USART_RXEN_bp

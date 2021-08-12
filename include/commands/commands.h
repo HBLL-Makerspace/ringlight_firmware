@@ -20,12 +20,16 @@
 #include<stdint.h>
 #include<stdlib.h>
 
-#define CMD_SET_CHN_COLOR_ID 0x01
-#define CMD_SET_CHN_INTENSITY_ID 0x02
-#define CMD_GET_CHN_COLOR_ID 0xa1
-#define CMD_GET_CHN_INTENSITY_ID 0xa2
-
-#define CMD_RETURN 0xff // Return command
+#define CMD_SET_CHN_COLOR_RGB_ID 0x02
+#define CMD_GET_CHN_COLOR_RGB_ID 0x22
+#define CMD_SET_CHN_COLOR_W_ID 0x03
+#define CMD_GET_CHN_COLOR_W_ID 0x23
+#define CMD_SET_CHN_INTENSITY_ID 0x04
+#define CMD_GET_CHN_INTENSITY_ID 0x24
+#define CMD_IDENTIFY_ID 0x01
+#define CMD_SET_SHUTTER_FOCUS_ID 0x05
+#define CMD_GET_SHUTTER_FOCUS_ID 0x25
+#define CMD_T_FLASH_ID 0x46
 
 /**
  * \class
