@@ -385,6 +385,6 @@ class ConnectionGroup(QGroupBox, Observer):
 
 if __name__ == "__main__":
     app  = QApplication(sys.argv)
-    app.setWindowIcon(QIcon('ring_light.png'))
+    app.setWindowIcon(QIcon('gui/ring_light.png'))
     ex = RingLightCtrlApp(AppState())
     sys.exit(app.exec_())

@@ -19,12 +19,26 @@ extern "C" {
  */
 uint8_t comm_parser_parse(uint8_t);
 
+/**
+ * \brief Gets the last received frame.
+ */
 comm_frame comm_parser_get_frame();
 
+/**
+ * \brief Checks if there is a recent frame that was received.
+ */
 uint8_t comm_parser_is_frame_available();
 
+/**
+ * \brief Free's the frames data so that we don't run out of RAM.
+ */
 void destory_frame(comm_frame frame);
 
+/**
+ * \brief Tells the parser that there was a timeout.
+ * 
+ * \warning Not currently working. Should be implemented using a timer.
+ */
 void comm_parser_timeout();
 
 #ifdef __cplusplus 
