@@ -20,7 +20,7 @@ static uint8_t got_frame = 0;
 uint8_t comm_parser_parse(uint8_t in) {
     static comm_frame curr;
     static uint8_t len = 0;
-    static uint8_t len_coutner = 0;
+    static uint8_t len_counter = 0;
 
     // printf("state: 0x%x, ", parser_state);
     // printf("in: 0x%x\n", in);
@@ -40,16 +40,19 @@ uint8_t comm_parser_parse(uint8_t in) {
             // printf("CMD: 0x%x ", in);
             curr.cmd = in;
             parser_state = S_DATA;
-            len = command_get_from_id(curr.id)->len;
-            len_coutner = 0;
+            len = command_get_from_id(curr.cmd)->len;
+            len_counter = 0;
+            // printf("%d\n", len);
             curr.data = (uint8_t*)malloc(sizeof(uint8_t) * len);
             break;
         case S_DATA:
             // printf("DATA: 0x%x, ", in);
-            if (len_coutner < len) {
-                curr.data[len_coutner] = in;
-                len_coutner++;
-            } else
+            if (len_counter < len) {
+                curr.data[len_counter] = in;
+                len_counter++;
+            }
+
+            if (len_counter == len)
                 parser_state = S_END;
             break;
         case S_END:
@@ -80,5 +83,7 @@ void destory_frame(comm_frame frame) {
     free(frame.data);
 }
 
-void comm_parser_timeout() {}
+void comm_parser_timeout() {
+    parser_state = S_START;
+}
 

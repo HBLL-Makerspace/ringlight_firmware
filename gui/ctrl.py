@@ -47,18 +47,40 @@ class RingLightConfTab(QWidget):
         self.selectrl = RLSelect(self, state)
         self.conf = RLConfigureGroup(self, state)
 
-        self.sendButtonSingle = QPushButton("Send Data of Selected")
-        self.sendButtonSingle.clicked.connect(state.sendDataSelected)
+        self.dataToSendSelector = QComboBox()
+        self.dataToSendSelector.addItem("All Color Data")
+        self.dataToSendSelector.addItem("RGB only")
+        self.dataToSendSelector.addItem("White only")
+        self.dataToSendSelector.currentIndexChanged.connect(self.updateDataToSend)
 
-        self.sendButtonAll = QPushButton("Send Data All")
+        self.sendButtonRingLight = QPushButton("Send to selected ringlight")
+        self.sendButtonRingLight.clicked.connect(state.sendDataSelectedRingLight)
+        self.sendButtonChannel = QPushButton("Send Data to selected channel")
+        self.sendButtonChannel.clicked.connect(state.sendDataSelectedChannel)
+
+        self.selectButtonRow = QHBoxLayout()
+        self.selectButtonRow.addWidget(self.sendButtonChannel)
+        self.selectButtonRow.addWidget(self.sendButtonRingLight)
+
+        self.sendButtonAll = QPushButton("Send data to all")
         self.sendButtonAll.clicked.connect(state.sendDataAll)
+
+        self.buttonGroupBox = QGroupBox("Send Data")
+        self.groupboxLayout = QVBoxLayout()
+        self.groupboxLayout.addWidget(self.dataToSendSelector)
+        self.groupboxLayout.addLayout(self.selectButtonRow)
+        self.groupboxLayout.addWidget(self.sendButtonAll)
+        self.buttonGroupBox.setLayout(self.groupboxLayout)
 
         self.layout.addWidget(self.selectrl)
         self.layout.addWidget(self.conf, stretch=1)
-        self.layout.addWidget(self.sendButtonSingle)
-        self.layout.addWidget(self.sendButtonAll)
-
+        self.layout.addWidget(self.buttonGroupBox)
+    
         self.setLayout(self.layout)
+        self.state = state
+
+    def updateDataToSend(self, i):
+        self.state.updateDataToSend(i)
 
 class RLConfigureGroup(QGroupBox, Observer):
     def __init__(self, parent, state: AppState):
@@ -74,21 +96,33 @@ class RLConfigureGroup(QGroupBox, Observer):
         self.layout = QHBoxLayout()
 
         self.frame = QFrame()
-        self.frame.resize(10, 10)
         color = self.state.colors[self.state.selectedRingLight][self.state.selectedChannel]
         if color is None:
             color = QColor(0, 0, 0)
         self.frame.setStyleSheet("QWidget { background-color: %s }" % color.name())
 
-        self.changeColorButton = QPushButton("Change Color", self)
+        self.whiteFrame = QFrame()
+        whitecolor = self.state.whiteColors[self.state.selectedRingLight][self.state.selectedChannel]
+        if whitecolor is None:
+            whitecolor = QColor(0, 0, 0)
+        self.whiteFrame.setStyleSheet("QWidget { background-color: %s }" % whitecolor.name())
+
+        self.changeColorButton = QPushButton("Change RGB Color", self)
         self.changeColorButton.clicked.connect(self.getColor)
-        self.randomColorButton = QPushButton("Random Color", self)
+
+        self.changeWhiteButton = QPushButton("Change White Color", self)
+        self.changeWhiteButton.clicked.connect(self.getWhiteColor)
+        # self.randomColorButton = QPushButton("Random Color", self)
         # self.randomColorButton.clicked.connect()
 
         self.colorLayout = QVBoxLayout()
         self.colorLayout.addWidget(self.frame)
         self.colorLayout.addWidget(self.changeColorButton)
-        self.colorLayout.addWidget(self.randomColorButton)
+        # self.colorLayout.addWidget(self.randomColorButton)
+
+        self.whiteColorLayout = QVBoxLayout()
+        self.whiteColorLayout.addWidget(self.whiteFrame)
+        self.whiteColorLayout.addWidget(self.changeWhiteButton)
 
         self.shutter_button = QPushButton("Enable Shutter", self)
         self.shutter_button.setCheckable(True)
@@ -119,12 +153,9 @@ class RLConfigureGroup(QGroupBox, Observer):
         self.properties.addWidget(self.intensity)
         self.properties.addStretch(1)
 
-        self.useWhite = QCheckBox("Use white lights")
-        self.useWhite.stateChanged.connect(self.toggle_use_white)
-        self.properties.addWidget(self.useWhite)
-
         self.layout.addLayout(self.colorLayout)
         self.layout.addLayout(self.properties)
+        self.layout.addLayout(self.whiteColorLayout)
         self.setLayout(self.layout)
 
     def getColor(self):
@@ -132,6 +163,14 @@ class RLConfigureGroup(QGroupBox, Observer):
         if self.selectedColor.isValid():
             self.frame.setStyleSheet("QWidget { background-color: %s }" % self.selectedColor.name())
             self.state.updateRingLightColor(self.state.selectedRingLight, self.state.selectedChannel, self.selectedColor)
+
+    def getWhiteColor(self):
+        self.selectedWhiteColor = QColorDialog.getColor()
+        if self.selectedWhiteColor.isValid():
+            maxVal = max(self.selectedWhiteColor.red(), max(self.selectedWhiteColor.green(), self.selectedWhiteColor.blue()))
+            self.selectedWhiteColor = QColor(maxVal, maxVal, maxVal)
+            self.whiteFrame.setStyleSheet("QWidget { background-color: %s }" % self.selectedWhiteColor.name())
+            self.state.updateRingLightColorW(self.state.selectedRingLight, self.state.selectedChannel, self.selectedWhiteColor)
 
     def updateIntensity(self):
         self.state.updateIntensity(self.state.selectedRingLight, self.intensity.value())
@@ -142,10 +181,6 @@ class RLConfigureGroup(QGroupBox, Observer):
     def toggle_shutter_btn(self):
         self.state.updateShutter(self.state.selectedRingLight, self.shutter_button.isChecked())
 
-    def toggle_use_white(self):
-        self.state.updateUseWhite(self.state.selectedRingLight, self.state.selectedChannel, self.useWhite.isChecked())
-        # print(self.state.useWhite)
-
     def update(self, state):
         # if self.selectedrl is not state.selectedRingLight:
         #     self.selectedrl = state.selectedRingLight
@@ -153,6 +188,11 @@ class RLConfigureGroup(QGroupBox, Observer):
         if selectedColor is None:
             selectedColor = QColor(0, 0, 0)
         self.frame.setStyleSheet("QWidget { background-color: %s }" % selectedColor.name())
+
+        selectedWhiteColor = self.state.whiteColors[self.state.selectedRingLight][self.state.selectedChannel]
+        if selectedWhiteColor is None:
+            selectedWhiteColor = QColor(0, 0, 0)
+        self.whiteFrame.setStyleSheet("QWidget { background-color: %s }" % selectedWhiteColor.name())
         
         if self.intensity_val != self.state.intensity[self.state.selectedRingLight]:
             self.intensity_val = self.state.intensity[self.state.selectedRingLight]
@@ -187,8 +227,6 @@ class RLConfigureGroup(QGroupBox, Observer):
             self.shutter_button.setStyleSheet("background-color: lightgrey")
             self.shutter_button.setText("Enable Shutter")
             self.shutter_button.setChecked(False)
-
-        self.useWhite.setChecked(self.state.useWhite[self.state.selectedRingLight][self.state.selectedChannel])
 
 class RLSelect(QGroupBox, Observer):
     def __init__(self, parent, state: AppState):

@@ -21,7 +21,6 @@ class Command:
         for i in self.data:
             cmd.append(i)
         cmd.append(0x00);
-        cmd.append(0x00);
         return cmd
 
 

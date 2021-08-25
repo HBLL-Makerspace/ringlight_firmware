@@ -73,7 +73,7 @@ class TerminalSubject(Subject):
         self.notify()
 
     def write(self, data):
-        print(data)
+        # print(data)
         self._serial_port.write(data)
         self._serial_port.flush()
 
@@ -87,10 +87,11 @@ class AppState(Subject):
         self.observers = []
         self.numRingLights
         self.colors = [[QColor(0, 0, 0)]]
+        self.whiteColors = [[QColor(0, 0, 0)]]
         self.intensity = [None]
         self.shutter_enabled = [None]
         self.focus_enabled = [None]
-        self.useWhite = [[False]]
+        self.dataToSend = 0
 
     def attach(self, observer: Observer):
         self.observers.append(observer)
@@ -101,14 +102,15 @@ class AppState(Subject):
     def updateNumRingLights(self, numRingLights):
         self.numRingLights = numRingLights
         self.colors = [[QColor(0, 0, 0) for i in range(self.numChannels)] for j in range(self.numRingLights)]
+        self.whiteColors = [[QColor(0, 0, 0) for i in range(self.numChannels)] for j in range(self.numRingLights)]
         self.useWhite = [[False for i in range(self.numChannels)] for j in range(self.numRingLights)]
         self.intensity = [100 for j in range(self.numRingLights)]
         self.focus_enabled = [False for j in range(self.numRingLights)]
         self.shutter_enabled = [False for j in range(self.numRingLights)]
         self.notify()
 
-    def updateUseWhite(self, ringlight_id: int, channel_index: int, useWhite: bool):
-        self.useWhite[ringlight_id][channel_index] = useWhite;
+    def updateDataToSend(self, index: int):
+        self.dataToSend = index;
         self.notify()
 
     def updateSelectedRingLight(self, num):
@@ -122,11 +124,10 @@ class AppState(Subject):
     def updateRingLightColor(self, ringlight_id: int, channel_index: int, color: QColor):
         self.colors[ringlight_id][channel_index] = color
         self.notify()
-        # for i in range(self.numRingLights):
-        #     for j in range(self.numChannels):
-        #         colorP = self.colors[i][j]
-        #         print(str(colorP.name()), end=", ")
-        #     print()
+
+    def updateRingLightColorW(self, ringlight_id: int, channel_index: int, color: QColor):
+        self.whiteColors[ringlight_id][channel_index] = color
+        self.notify()
 
 
     def updateIntensity(self, ringlight_id: int, intensity: int):
@@ -148,25 +149,50 @@ class AppState(Subject):
             # time.sleep(0.1);
         # print(cmd.command_to_binary())
 
-    def sendDataSelected(self):
+    def sendDataSelectedChannel(self):
         color = self.colors[self.selectedRingLight][self.selectedChannel]
+        whiteColor = self.whiteColors[self.selectedRingLight][self.selectedChannel]
         cmd = None
-        if self.useWhite[self.selectedRingLight][self.selectedChannel]:
-            cmd = CmdSetChannelW(self.selectedRingLight, self.selectedChannel, max(max(color.red(), color.green()), color.blue()))
-        else:
+        if self.dataToSend == 0:
+            cmd = CmdSetChannelW(self.selectedRingLight, self.selectedChannel, max(max(whiteColor.red(), whiteColor.green()), whiteColor.blue()))
+            self.sendCommand(cmd)
             cmd = CmdSetChannelRGB(self.selectedRingLight, self.selectedChannel, color.red(), color.green(), color.blue())
-        self.sendCommand(cmd)
-        print("Sending data to ringlight")
+            self.sendCommand(cmd)
+        elif self.dataToSend == 1:
+            cmd = CmdSetChannelRGB(self.selectedRingLight, self.selectedChannel, color.red(), color.green(), color.blue())
+            self.sendCommand(cmd)
+        else:
+            cmd = CmdSetChannelW(self.selectedRingLight, self.selectedChannel, max(max(whiteColor.red(), whiteColor.green()), whiteColor.blue()))
+            self.sendCommand(cmd)
+
+    def sendDataSelectedRingLight(self):
+        # print("Sending to ringlight")
+        for i in range(self.numChannels):
+            color = self.colors[self.selectedRingLight][i]
+            whiteColor = self.whiteColors[self.selectedRingLight][i]
+            cmd = None
+            if self.dataToSend == 0:
+                cmd = CmdSetChannelW(self.selectedRingLight, i, max(max(whiteColor.red(), whiteColor.green()), whiteColor.blue()))
+                self.sendCommand(cmd)
+                cmd = CmdSetChannelRGB(self.selectedRingLight, i, color.red(), color.green(), color.blue())
+                self.sendCommand(cmd)
+            elif self.dataToSend == 1:
+                cmd = CmdSetChannelRGB(self.selectedRingLight, i, color.red(), color.green(), color.blue())
+                self.sendCommand(cmd)
+            else:
+                cmd = CmdSetChannelW(self.selectedRingLight, i, max(max(whiteColor.red(), whiteColor.green()), whiteColor.blue()))
+                self.sendCommand(cmd)
+            # time.sleep(.05)
 
     def sendDataAll(self):
-        print("Sending data to all ringlights")
+        print("Sending data to all ringlights: NOT IMPLEMENTED")
 
     def copy_to_all(self, ringlight_id: int):
         color = self.colors[ringlight_id]
+        whiteColor = self.whiteColors[ringlight_id]
         focus_enabled = self.focus_enabled[ringlight_id]
         shutter_enabled = self.shutter_enabled[ringlight_id]
         intensity = self.intensity[ringlight_id]
-        useWhite = self.useWhite[ringlight_id]
         for x in range(self.numRingLights):
             self.intensity[x] = intensity
             self.colors[x] = color
@@ -177,15 +203,15 @@ class AppState(Subject):
 
     def copy_to_all_chns(self, ringlight_id: int, channel: int):
         color = self.colors[ringlight_id][channel]
-        useWhite = self.useWhite[ringlight_id][channel]
+        whiteColor = self.whiteColors[ringlight_id][channel]
         for x in range(self.numChannels):
             self.colors[ringlight_id][x] = color
-            self.useWhite[ringlight_id][x] = useWhite
+            self.whiteColors[ringlight_id][x] = whiteColor
             
     
     def reset_channel(self, ringlight_id: int, channel: int, notify = True):
         self.colors[ringlight_id][channel] = QColor(0, 0, 0)
-        self.useWhite[ringlight_id][channel] = False
+        self.whiteColors[ringlight_id][channel] = QColor(0, 0, 0)
         if notify:
             self.notify()
 

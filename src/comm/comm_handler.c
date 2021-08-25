@@ -1,4 +1,5 @@
 #include<drivers/usart.h>
+#include<stdio.h>
 
 #include<comm/frame.h>
 #include<comm/comm_parser.h>
@@ -34,7 +35,8 @@ uint8_t comm_handler_tick() {
     else
         timeout++;
 
-    if (timeout == 0)
+    if (timeout == 0) {
         comm_parser_timeout();
+    }
     return 0;
 }
