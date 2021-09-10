@@ -4,13 +4,13 @@
  * \brief Command class for the ring light communication protocol.
  * 
  * Command class is a base class for the commnad system for the ring lights.
- * Commands are ways to control aspects of the ringlight like conrolling the
+ * Commands are ways to control aspects of the ringlight like controlling the
  * color, light intensity etc.
  * 
  * New commands are created by extending either this class (the base command) or
  * by extending another command.
  * 
- * \author Ben Brenkman
+ * \author Ben Brenkman & Jack Damiano
  * \date 30 June 2021
  */
 

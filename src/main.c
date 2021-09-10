@@ -37,7 +37,7 @@ int main(void) {
         // _delay_ms(1000);
 
 
-        chn_ctrl_test_suite_run_all();
+        //chn_ctrl_test_suite_run_all();
 
         // printf("Hello\n");
         // _delay_ms(500);
@@ -48,23 +48,24 @@ int main(void) {
         // comm_test_suite_run_all();
 
         // This is the main loop, it should be very short. Cannot use printf in the loop.
-        // comm_handler_tick();
+        comm_handler_tick();
 
-        // if (comm_handler_did_receive_frame()) {
-        //     comm_frame frame = comm_handler_get_frame();
-        //     // printf("received frame\n");
-        //     // printf("ID: 0x%x ",  frame.id);
-        //     // printf("CMD: 0x%x ",  frame.cmd);
+        if (comm_handler_did_receive_frame()) {
+            comm_frame frame = comm_handler_get_frame();
+            // printf("received frame\n");
+            // printf("ID: 0x%x ",  frame.id);
+            // printf("CMD: 0x%x ",  frame.cmd);
         //     uint8_t len = command_get_from_id(frame.cmd)->len;
         //     // printf("DATA: [ ");
         //     for (uint8_t i = 0; i < len; i++) {
         //         // printf("0x%x ", frame.data[i]);
         //     }
-        //     // printf("]\n");
+            // printf("]\n");
 
-        //     Command* cmd = command_get_from_id(frame.cmd);
-        //     cmd->process(frame.data);
-        // }
+            Command* cmd = command_get_from_id(frame.cmd);
+            
+        }
+        
 	}
 
 	return 0;
