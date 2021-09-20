@@ -30,9 +30,9 @@ extern "C" {
  * 
  * The color for each channel is defined by an R, G and B value. There is also
  * an intensity value that is a multiplier for the final color. So the intensity
- * or brightness can be controlled seperatlly.
+ * or brightness can be controlled separately.
  */
-typedef struct Channel {
+typedef struct Channel { 
     uint8_t r;
     uint8_t g;
     uint8_t b;

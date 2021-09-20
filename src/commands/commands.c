@@ -17,6 +17,15 @@ static const Command cmd_set_chn_color_w =
     .process = &cmd_set_chn_color_w_process
 };
 
+//command to control focus and shutter
+static const Command cmd_set_shutter_focus =
+{
+    .cmd = CMD_SET_SHUTTER_FOCUS_ID,
+    .len = CMD_SET_SHUTTER_FOCUS_LEN,
+    .process = &cmd_set_shutter_focus_process
+
+};
+
 const Command* command_get_from_id(uint8_t id) {
     switch (id)
     {
@@ -26,16 +35,9 @@ const Command* command_get_from_id(uint8_t id) {
         return &cmd_set_chn_color_rgb;
     case CMD_SET_CHN_COLOR_W_ID:
         return &cmd_set_chn_color_w;
+    case CMD_SET_SHUTTER_FOCUS_ID:
+        return &cmd_set_shutter_focus;
     default:
         return &cmd_set_chn_color_rgb;
     }
-}
-
-//command to control focus and shutter
-const Command cmd_set_shutter_focus =
-{
-    .cmd = CMD_SET_SHUTTER_FOCUS_ID,
-    .len = CMD_SET_SHUTTER_FOCUS_LEN,
-    .process = &cmd_set_shutter_focus_process
-
 };

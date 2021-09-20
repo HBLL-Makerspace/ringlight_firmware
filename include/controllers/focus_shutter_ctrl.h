@@ -23,7 +23,12 @@ extern "C" {
 
 
 //function declarations go here
-
+/**
+ * \brief LED test
+ * 
+ * LED test
+ */
+void focus_shutter_led_test(bool isOn);
 
 #ifdef __cplusplus
 }

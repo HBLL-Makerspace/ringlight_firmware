@@ -1,9 +1,16 @@
 #include<commands/cmd_set_shutter_focus.h>
-#include<controllers/channel_ctrl.h>
+#include<controllers/focus_shutter_ctrl.h>
 
 
-//current implementation just turns on an LED
+//current implementation just turns on/off Fs1 and fs2 LEDs
 uint8_t cmd_set_shutter_focus_process(uint8_t* data) {
-    chn_ctrl_set_channel_color_w(data[0], data[1]);
+    
+    bool isOn = true;
+    /* if(!&data){
+        isOn = false;
+    }  */
+
+    focus_shutter_led_test(isOn);
+
     return 0;
 }

@@ -1,5 +1,6 @@
 SET_CHANNEL_RGBI_ID = 0x02
 SET_CHANNEL_W_ID = 0x03
+CMD_SET_SHUTTER_FOCUS_ID = 0x05
 
 class Command:
     def __init__(self, id, cmd, data):
@@ -31,3 +32,8 @@ class CmdSetChannelRGB(Command):
 class CmdSetChannelW(Command):
     def __init__(self, id, channel, w):
         super().__init__(id, SET_CHANNEL_W_ID, [channel, w])
+
+#for focus shutter test
+class CmdSetFocusShutter(Command):
+    def __init__(self, id, channel, w):
+        super().__init__(id, CMD_SET_SHUTTER_FOCUS_ID, [testData])
