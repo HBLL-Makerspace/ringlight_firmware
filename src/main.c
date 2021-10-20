@@ -14,17 +14,20 @@
 #include<comm/frame.h>
 #include<comm/comm_handler.h>
 #include<commands/commands.h>
+#include<commands/cmd_set_shutter_focus.h>
 
 
 #define NUMPIXELS      12
 #define LEDS_PER_GROUP 4
 #define NUMBER_GROUPS  3
 #define DEGREE_SPACING 43
+#define LED_ON 1
 
 
 int main(void) {
 	system_init();
 	RTC_enable_heartbeat();
+    uint8_t led = LED_ON;
 
 	while(1) {
 
@@ -39,8 +42,17 @@ int main(void) {
 
         //chn_ctrl_test_suite_run_all();
 
-        // printf("Hello\n");
-        // _delay_ms(500);
+
+
+        //printf("Hello\n");
+
+        /*_delay_ms(500);
+
+        cmd_set_shutter_focus_process(0);
+
+        _delay_ms(500); 
+
+        cmd_set_shutter_focus_process(&led);  */
 
         // char c = USART_read();
         // printf("%c", c);
@@ -52,21 +64,12 @@ int main(void) {
 
         if (comm_handler_did_receive_frame()) {
             comm_frame frame = comm_handler_get_frame();
-            // printf("received frame\n");
-            // printf("ID: 0x%x ",  frame.id);
-            // printf("CMD: 0x%x ",  frame.cmd);
-        //     uint8_t len = command_get_from_id(frame.cmd)->len;
-        //     // printf("DATA: [ ");
-        //     for (uint8_t i = 0; i < len; i++) {
-        //         // printf("0x%x ", frame.data[i]);
-        //     }
-            // printf("]\n");
-
+ 
             Command* cmd = command_get_from_id(frame.cmd);
-            
-        }
+            cmd->process(frame.data);
+        }  
         
 	}
-
+ 
 	return 0;
 }

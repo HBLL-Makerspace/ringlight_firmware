@@ -35,5 +35,5 @@ class CmdSetChannelW(Command):
 
 #for focus shutter test
 class CmdSetFocusShutter(Command):
-    def __init__(self, id, channel, w):
-        super().__init__(id, CMD_SET_SHUTTER_FOCUS_ID, [testData])
+    def __init__(self, id, focus, shutter):
+        super().__init__(id, CMD_SET_SHUTTER_FOCUS_ID, [focus, shutter])

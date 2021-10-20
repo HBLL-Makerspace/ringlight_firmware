@@ -23,7 +23,6 @@ static const Command cmd_set_shutter_focus =
     .cmd = CMD_SET_SHUTTER_FOCUS_ID,
     .len = CMD_SET_SHUTTER_FOCUS_LEN,
     .process = &cmd_set_shutter_focus_process
-
 };
 
 const Command* command_get_from_id(uint8_t id) {

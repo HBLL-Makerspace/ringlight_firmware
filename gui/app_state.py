@@ -73,7 +73,7 @@ class TerminalSubject(Subject):
         self.notify()
 
     def write(self, data):
-        # print(data)
+        print(data)
         self._serial_port.write(data)
         self._serial_port.flush()
 
@@ -89,8 +89,8 @@ class AppState(Subject):
         self.colors = [[QColor(0, 0, 0)]]
         self.whiteColors = [[QColor(0, 0, 0)]]
         self.intensity = [None]
-        self.shutter_enabled = [None]
-        self.focus_enabled = [None]
+        self.shutter_enabled = False 
+        self.focus_enabled = False
         self.dataToSend = 0
 
     def attach(self, observer: Observer):
@@ -134,10 +134,12 @@ class AppState(Subject):
         self.intensity[ringlight_id] = intensity
         self.notify()
 
+    # updates focus_enabled boolean for the specified ringlight
     def updateFocus(self, ringlight_id: int, focus):
         self.focus_enabled[ringlight_id] = focus
         self.notify()
 
+    # updates shutter_enabled boolean for the specified ringlight
     def updateShutter(self, ringlight_id: int, shutter):
         self.shutter_enabled[ringlight_id] = shutter
         self.notify()
@@ -147,7 +149,7 @@ class AppState(Subject):
             # print(type(cmd[i]))
             self.terminal.write(i.to_bytes(1, "little"))
             # time.sleep(0.1);
-        # print(cmd.command_to_binary())
+        print(cmd.command_to_binary())
 
     def sendDataSelectedChannel(self):
         color = self.colors[self.selectedRingLight][self.selectedChannel]
@@ -183,10 +185,13 @@ class AppState(Subject):
                 cmd = CmdSetChannelW(self.selectedRingLight, i, max(max(whiteColor.red(), whiteColor.green()), whiteColor.blue()))
                 self.sendCommand(cmd)
             # time.sleep(.05)
+        cmd = CmdSetFocusShutter(self.selectedRingLight, int(self.focus_enabled[self.selectedRingLight]), int(self.shutter_enabled[self.selectedRingLight]))
+        self.sendCommand(cmd)
 
     def sendDataAll(self):
         print("Sending data to all ringlights: NOT IMPLEMENTED")
 
+    #copies current settings onto all ring lights
     def copy_to_all(self, ringlight_id: int):
         color = self.colors[ringlight_id]
         whiteColor = self.whiteColors[ringlight_id]
@@ -201,6 +206,7 @@ class AppState(Subject):
         
         self.notify()
 
+    # copies current channel to all other channels
     def copy_to_all_chns(self, ringlight_id: int, channel: int):
         color = self.colors[ringlight_id][channel]
         whiteColor = self.whiteColors[ringlight_id][channel]
@@ -208,13 +214,14 @@ class AppState(Subject):
             self.colors[ringlight_id][x] = color
             self.whiteColors[ringlight_id][x] = whiteColor
             
-    
+    # resets the selected channel
     def reset_channel(self, ringlight_id: int, channel: int, notify = True):
         self.colors[ringlight_id][channel] = QColor(0, 0, 0)
         self.whiteColors[ringlight_id][channel] = QColor(0, 0, 0)
         if notify:
             self.notify()
 
+    # resets current ringlight
     def reset_ring_light(self, ringlight_id: int):
         for i in range(self.numChannels):
             self.reset_channel(ringlight_id, i, notify=False)
@@ -224,6 +231,7 @@ class AppState(Subject):
         self.focus_enabled[ringlight_id] = False
         self.notify()
 
+    #resets all ringlights
     def reset(self):
         for i in range(self.numRingLights):
             self.reset_ring_light(i)
