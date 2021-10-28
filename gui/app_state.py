@@ -46,7 +46,7 @@ class TerminalSubject(Subject):
         while self._serial_port.canReadLine():
             text = self._serial_port.readLine().data().decode()
             text = text.rstrip('\r')
-            print(text, end= '')
+            #print(text, end= '')
             self._new_line = text
             self.notify()
             self._new_line = None
@@ -149,7 +149,7 @@ class AppState(Subject):
         for i in cmd.command_to_binary():
             # print(type(cmd[i]))
             self.terminal.write(i.to_bytes(1, "little"))
-            time.sleep(0.1)
+            #time.sleep(0.1)
         print(cmd.command_to_binary())
 
     def sendDataSelectedChannel(self):
