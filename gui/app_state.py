@@ -41,11 +41,12 @@ class TerminalSubject(Subject):
         for observer in self._observers:
             observer.update(self)
 
-    # @QtCore.pyqtSlot()
+    #@QtCore.pyqtSlot()
     def receive(self):
         while self._serial_port.canReadLine():
             text = self._serial_port.readLine().data().decode()
             text = text.rstrip('\r')
+            print(text, end= '')
             self._new_line = text
             self.notify()
             self._new_line = None

@@ -23,21 +23,21 @@ uint8_t comm_parser_parse(uint8_t in) {
     static uint8_t len_counter = 0;
 
     printf("state: 0x%x, ", parser_state);
-    printf("in: 0x%x\n", in);
+    printf("Data in: 0x%x\n", in);
 
     switch(parser_state) {
         case S_START:
-            printf("START ");
+            printf("START \n");
             if (in == PROTOCOL_START_BYTE)
                 parser_state = S_ID;
             break;
         case S_ID:
-            printf("ID: 0x%x ", in);
+            printf("ID: 0x%x \n", in);
             curr.id = in;
             parser_state = S_CMD;
             break;
         case S_CMD:
-            printf("CMD: 0x%x ", in);
+            printf("CMD: 0x%x \n", in);
             curr.cmd = in;
             parser_state = S_DATA;
             len = command_get_from_id(curr.cmd)->len;
@@ -46,13 +46,13 @@ uint8_t comm_parser_parse(uint8_t in) {
             curr.data = (uint8_t*)malloc(sizeof(uint8_t) * len);
             break;
         case S_DATA:
-            printf("DATA: 0x%x, ", in);
+            printf("DATA: 0x%x, \n", in);
             if (len_counter < len) {
                 curr.data[len_counter] = in;
                 len_counter++;
             }
 
-            if (len_counter == len)
+            else if (len_counter == len)
                 parser_state = S_END;
             break;
         case S_END:
