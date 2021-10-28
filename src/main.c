@@ -42,17 +42,11 @@ int main(void) {
 
         //chn_ctrl_test_suite_run_all();
 
+        // cmd_set_shutter_focus_process(0);
 
+        // _delay_ms(500); 
 
-        //printf("Hello\n");
-
-        /*_delay_ms(500);
-
-        cmd_set_shutter_focus_process(0);
-
-        _delay_ms(500); 
-
-        cmd_set_shutter_focus_process(&led);  */
+        // cmd_set_shutter_focus_process(&led);  
 
         // char c = USART_read();
         // printf("%c", c);

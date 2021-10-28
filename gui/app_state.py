@@ -148,7 +148,7 @@ class AppState(Subject):
         for i in cmd.command_to_binary():
             # print(type(cmd[i]))
             self.terminal.write(i.to_bytes(1, "little"))
-            # time.sleep(0.1);
+            time.sleep(0.1)
         print(cmd.command_to_binary())
 
     def sendDataSelectedChannel(self):
@@ -168,22 +168,22 @@ class AppState(Subject):
             self.sendCommand(cmd)
 
     def sendDataSelectedRingLight(self):
-        # print("Sending to ringlight")
+        print("Sending to ringlight")
         for i in range(self.numChannels):
             color = self.colors[self.selectedRingLight][i]
             whiteColor = self.whiteColors[self.selectedRingLight][i]
             cmd = None
             if self.dataToSend == 0:
                 cmd = CmdSetChannelW(self.selectedRingLight, i, max(max(whiteColor.red(), whiteColor.green()), whiteColor.blue()))
-                self.sendCommand(cmd)
+                #self.sendCommand(cmd)
                 cmd = CmdSetChannelRGB(self.selectedRingLight, i, color.red(), color.green(), color.blue())
-                self.sendCommand(cmd)
+                #self.sendCommand(cmd)
             elif self.dataToSend == 1:
                 cmd = CmdSetChannelRGB(self.selectedRingLight, i, color.red(), color.green(), color.blue())
-                self.sendCommand(cmd)
+                #self.sendCommand(cmd)
             else:
                 cmd = CmdSetChannelW(self.selectedRingLight, i, max(max(whiteColor.red(), whiteColor.green()), whiteColor.blue()))
-                self.sendCommand(cmd)
+                #self.sendCommand(cmd)
             # time.sleep(.05)
         cmd = CmdSetFocusShutter(self.selectedRingLight, int(self.focus_enabled[self.selectedRingLight]), int(self.shutter_enabled[self.selectedRingLight]))
         self.sendCommand(cmd)
