@@ -5,7 +5,7 @@
  * Handles the sending and receiving of frames. The tick function must be called periodically
  * to receive data. Will be a polled function and not a blocking function.
  * 
- * \author Ben Brenkman
+ * \author Ben Brenkman and Jack Damiano
  * \date 12 August 2021
  */
 
@@ -20,16 +20,46 @@ extern "C" {
 #endif
 
 /**
- * \brief Sends a single frame.
+ * \brief initializes the comm handler, specifically the transmission buffers.
+ * Only needs to be called once at beginning of main
+ */
+void comm_handler_init();
+
+/**
+ * \brief Sends a single frame. must destroy frame after it is sent
+ * 
+ * 
+ */
+uint8_t comm_handler_send_frame();
+
+/**
+ * \brief Sends the current transmission frame byte by byte. returns a bool true if transmission is ongoing.
+ * returns false when the current frame has finished sending
+ * 
+ */
+bool comm_handler_byte_sender();
+
+/**
+ * \brief Stores a single frame for transmitting later.
  * 
  * \param [in] frame Frame that is being sent. Must destroy frame after it has been sent.
  */
-uint8_t comm_handler_send_frame(comm_frame frame);
+void comm_handler_store_frame(comm_frame frame);
 
 /**
- * \brief Gets the received frame.
+ * \brief Gets the received frame from comm_parser.
  */
 comm_frame comm_handler_get_frame();
+
+/**
+ * \brief Gets the received frame if we have one for this ringlight.
+ */
+comm_frame comm_handler_get_my_frame();
+
+/**
+ * \brief returns if we have a frame ready for this ringlight
+ */
+bool comm_handler_this_has_frame();
 
 /**
  * \brief Not implemented

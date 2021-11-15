@@ -74,7 +74,7 @@ class TerminalSubject(Subject):
         self.notify()
 
     def write(self, data):
-        print(data)
+        #print(data)
         self._serial_port.write(data)
         self._serial_port.flush()
 
@@ -149,8 +149,8 @@ class AppState(Subject):
         for i in cmd.command_to_binary():
             # print(type(cmd[i]))
             self.terminal.write(i.to_bytes(1, "little"))
-            #time.sleep(0.1)
-        print(cmd.command_to_binary())
+            #time.sleep(0.05)
+        #print(cmd.command_to_binary())
 
     def sendDataSelectedChannel(self):
         color = self.colors[self.selectedRingLight][self.selectedChannel]
@@ -185,7 +185,7 @@ class AppState(Subject):
             else:
                 cmd = CmdSetChannelW(self.selectedRingLight, i, max(max(whiteColor.red(), whiteColor.green()), whiteColor.blue()))
                 #self.sendCommand(cmd)
-            # time.sleep(.05)
+            time.sleep(.05)
         cmd = CmdSetFocusShutter(self.selectedRingLight, int(self.focus_enabled[self.selectedRingLight]), int(self.shutter_enabled[self.selectedRingLight]))
         self.sendCommand(cmd)
 

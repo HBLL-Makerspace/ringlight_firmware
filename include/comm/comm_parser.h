@@ -1,3 +1,14 @@
+/**
+ * \file
+ * \brief Parses communication for the ringlights.
+ * 
+ * Parses through bytes of data to process commands intended for this specific ringlight.
+ * Setup to parse asynchornously to avoid blocking incoming rx data
+ * 
+ * \author Jack Damiano and Ben Brenkman
+ * \date  10 November 2021
+ */
+
 #ifndef COMMAND_PARSER_H__
 #define COMMAND_PARSER_H__
 

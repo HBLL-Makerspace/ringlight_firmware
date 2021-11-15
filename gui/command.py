@@ -21,7 +21,7 @@ class Command:
         cmd = [0xff, self.id, self.cmd]
         for i in self.data:
             cmd.append(i)
-        cmd.append(0x00);
+        cmd.append(0x00)
         return cmd
 
 
@@ -33,7 +33,7 @@ class CmdSetChannelW(Command):
     def __init__(self, id, channel, w):
         super().__init__(id, SET_CHANNEL_W_ID, [channel, w])
 
-#for focus shutter test
+#for focus shutter
 class CmdSetFocusShutter(Command):
     def __init__(self, id, focus, shutter):
         super().__init__(id, CMD_SET_SHUTTER_FOCUS_ID, [focus, shutter])

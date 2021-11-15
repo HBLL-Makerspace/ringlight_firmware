@@ -26,6 +26,7 @@
 
 int main(void) {
 	system_init();
+    comm_handler_init();
 	RTC_enable_heartbeat();
     uint8_t led = LED_ON;
 
@@ -43,25 +44,21 @@ int main(void) {
         //chn_ctrl_test_suite_run_all();
 
         // cmd_set_shutter_focus_process(0);
+        // cmd_set_shutter_focus_process(&led);
 
-        // _delay_ms(500); 
-
-        // cmd_set_shutter_focus_process(&led);  
-
-        // char c = USART_read();
-        // printf("%c", c);
 
         // comm_test_suite_run_all();
 
         // This is the main loop, it should be very short. Cannot use printf in the loop.
         comm_handler_tick();
 
-        if (comm_handler_did_receive_frame()) {
-            comm_frame frame = comm_handler_get_frame();
- 
+        //FIXME if there is a frame for ME to execute, do it
+        if (comm_handler_this_has_frame()) {
+            comm_frame frame = comm_handler_get_my_frame();
+
             Command* cmd = command_get_from_id(frame.cmd);
             cmd->process(frame.data);
-        }  
+        }
         
 	}
  
