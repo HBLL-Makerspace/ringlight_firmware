@@ -147,7 +147,7 @@ class AppState(Subject):
 
     def sendCommand(self, cmd: Command):
         for i in cmd.command_to_binary():
-            # print(type(cmd[i]))
+            #print(type(cmd[i]))
             self.terminal.write(i.to_bytes(1, "little"))
             #time.sleep(0.05)
         #print(cmd.command_to_binary())
