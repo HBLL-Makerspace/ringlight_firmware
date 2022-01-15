@@ -57,7 +57,9 @@ uint8_t comm_handler_send_frame() {
         //get length of transmission frame for byte sender
         currTransmissionLength = BASE_TRANSMISSION_SIZE_OFFSET + command_get_from_id(currTransmissionFrame.cmd)->len;
     }
-
+    // _delay_ms(100);
+    // printf("currTransmissionLength: %d and corresponding data: ", currTransmissionLength);
+    // _delay_ms(100);
     //now that we for sure have a frame, we need to start sending it in bytes
     frameTransmissionOngoing = comm_handler_byte_sender();
     
@@ -67,15 +69,17 @@ uint8_t comm_handler_send_frame() {
 bool comm_handler_byte_sender(){
     //keeps track of current frame and transmits one byte at a time
     //TODO
-    // _delay_ms(100);
-    // printf("currTransmissionLength before subtraction: %d\n", currTransmissionLength);
-    // _delay_ms(100);
+    //_delay_ms(100);
+    //printf("currTransmissionLength before subtraction: %d\n", currTransmissionLength);
+    //_delay_ms(100);
 
     //if length is greater than 0
     if(currTransmissionLength > 0) {
         currTransmissionLength--;
-        // printf("currTransmissionLength after subtraction: %d\n", currTransmissionLength);
+        //printf("currTransmissionLength after subtraction: %d\n", currTransmissionLength);
+        // printf("* \n");
         // _delay_ms(100);
+        //IMPORTANT: if debugging with serial, change start byte from 255 to 0 for utf-8 to decode correctly.
         const uint8_t start_byte = 255;
         const uint8_t end_byte = 0;
 
@@ -84,33 +88,33 @@ bool comm_handler_byte_sender(){
         //if we are in the first three bytes (before data)
         if((currTransmissionLength - END_BYTE_OFFSET - command_get_from_id(currTransmissionFrame.cmd)->len) < 255){
             //allows me to see what part of the header we are on
+            // _delay_ms(1000);
             uint8_t headerIndex = currTransmissionLength - END_BYTE_OFFSET - command_get_from_id(currTransmissionFrame.cmd)->len;
-            // printf("headerIndex: %d\n", headerIndex);
-            // _delay_ms(100);
+            //printf("headerIndex: %d\n", headerIndex);
+            //_delay_ms(1000);
             
 
             //send start byte
             if(headerIndex == 2){
-                //_delay_ms(100);
+                // printf("start \n");
+                // _delay_ms(1000);
                 USART_write(start_byte);
-                printf("start \n");
-                _delay_ms(100);
                 return true;
             }
 
             //send ringlight ID byte
             else if(headerIndex == 1){
-                USART_write(currTransmissionFrame.id);
-                printf("ringlight ID: %d\n", currTransmissionFrame.id);
-                _delay_ms(100);
+                // printf("ringlight ID: %d\n", currTransmissionFrame.id);
+                // _delay_ms(1000);
+                USART_write((const uint8_t) currTransmissionFrame.id);
                 return true;
             }
 
             //send command ID
             else if(headerIndex == 0){
-                USART_write(currTransmissionFrame.cmd);
-                printf("command ID: %d\n", currTransmissionFrame.cmd);
-                _delay_ms(100);
+                // printf("command ID: %d\n", currTransmissionFrame.cmd);
+                // _delay_ms(1000);
+                USART_write((const uint8_t) currTransmissionFrame.cmd);
                 return true;
             }
         }
@@ -119,15 +123,15 @@ bool comm_handler_byte_sender(){
         else if(currTransmissionLength > 0){
 
             //returns the index for the data we need to access
-            uint8_t currDataIndex = command_get_from_id(currTransmissionFrame.cmd)->len - (currTransmissionLength - BASE_TRANSMISSION_SIZE_OFFSET + END_BYTE_OFFSET);
+            uint8_t currDataIndex = command_get_from_id(currTransmissionFrame.cmd)->len - currTransmissionLength;
             //gets pointer to data
             uint8_t* currData = currTransmissionFrame.data;
             currData = currData + currDataIndex;
 
             //access data at current index and send it
-            USART_write(*currData);
-            printf("data: %d\n", *currData);
-            _delay_ms(100);
+            // printf("data: %d\n", *currData);
+            // _delay_ms(1000);
+            USART_write((const uint8_t) *currData);
             return true;
 
         }
@@ -135,11 +139,11 @@ bool comm_handler_byte_sender(){
         //if we are at the end. send the end byte and return false that the transmission is over
         else if (currTransmissionLength == 0) {
             USART_write(end_byte);//send empty byte
-            printf("end byte: %d\n", PROTOCOL_END_BYTE);
-            _delay_ms(100);
+            // printf("end byte: %d\n", PROTOCOL_END_BYTE);
+            // _delay_ms(1000);
             frameBuffferCount--;
-            printf("finished transmitting frame!\n");
-            _delay_ms(100);
+            // printf("finished transmitting frame!\n");
+            // _delay_ms(100);
             return false;
         }
         // printf("Your if else block is messed up :(\n");
@@ -147,7 +151,7 @@ bool comm_handler_byte_sender(){
     }
 
     //if we get here, we've exhausted our frame and need a new one
-    // printf("No frame to transmit!\n");
+    //printf("No frame to transmit!\n");
     // _delay_ms(100);
     return false;
 }
@@ -165,7 +169,7 @@ void comm_handler_store_frame(comm_frame frame) {
     //if we lose the frame, let em know
     else {
         //printf("wasted frame: beyond transmission buffer size\n");
-    }
+    } 
 }
 
 uint8_t comm_handler_recieve_frame() {
@@ -221,7 +225,8 @@ uint8_t comm_handler_tick() {
                 currFrame.id--;
                 frameBuffferCount++;
                 comm_handler_store_frame(currFrame);
-                //printf("passed it on! new frameBufferCount: %d\n", frameBuffferCount);
+                // printf("passed it on! new frameBufferCount: %d\n", frameBuffferCount);
+                // _delay_ms(100);
 
             }
         }
