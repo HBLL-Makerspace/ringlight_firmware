@@ -47,7 +47,7 @@ int main(void) {
         // cmd_set_shutter_focus_process(&led);
 
 
-        // comm_test_suite_run_all();
+        //comm_test_suite_run_all();
 
         // This is the main loop, it should be very short. Cannot use printf in the loop.
         comm_handler_tick();

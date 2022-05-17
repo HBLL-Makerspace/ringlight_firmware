@@ -15,8 +15,9 @@
 
 #define NUMPIXELS      12
 #define LEDS_PER_GROUP 4
-#define NUMBER_GROUPS 3
+#define NUMBER_CHANNELS 3
 #define DEGREE_SPACING 43
+#define CHANNEL_OFFSET 12
 
 /*
  * There is 18 times more light per level of the white LED's verses the ws2812b leds. 
@@ -61,7 +62,8 @@ void chn_ctrl_init() {
 	PWM_enable_ch4();
 	PWM_enable_ch5();
 
-    WS2812_init(WS2812_GRB, NUMBER_GROUPS * LEDS_PER_GROUP, &PORTA.OUT, PIN6_bp);
+    //number of groups multiplied by two since we have two groups per channel
+    WS2812_init(WS2812_GRB, 2 * NUMBER_CHANNELS * LEDS_PER_GROUP, &PORTA.OUT, PIN6_bp);
     chn_ctrl_update_leds();
 }
 
@@ -163,9 +165,11 @@ static void chn_ctrl_update_chn(uint8_t channel) {
             chn.pwm_set_duty(w);
         }
 
-        uint8_t start = LEDS_PER_GROUP * channel;
+        //turns on LEDS for both groups in each channel
+        uint8_t start = (LEDS_PER_GROUP * channel);
         for (uint8_t i = 0; i < LEDS_PER_GROUP; i++) {
             WS2812_set_pixel_color_RGB(start + i, r, g, b);
+            WS2812_set_pixel_color_RGB(start + i + CHANNEL_OFFSET, r, g, b);
         }
     }
 }

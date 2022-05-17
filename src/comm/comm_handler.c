@@ -80,7 +80,7 @@ bool comm_handler_byte_sender(){
         // printf("* \n");
         // _delay_ms(100);
         //IMPORTANT: if debugging with serial, change start byte from 255 to 0 for utf-8 to decode correctly.
-        const uint8_t start_byte = 255;
+        const uint8_t start_byte = 0;
         const uint8_t end_byte = 0;
 
         
@@ -142,8 +142,8 @@ bool comm_handler_byte_sender(){
             // printf("end byte: %d\n", PROTOCOL_END_BYTE);
             // _delay_ms(1000);
             frameBuffferCount--;
-            // printf("finished transmitting frame!\n");
-            // _delay_ms(100);
+            //printf("finished transmitting frame! updated frameBufferCount: %d\n", frameBuffferCount);
+            //_delay_ms(100);
             return false;
         }
         // printf("Your if else block is messed up :(\n");
@@ -169,6 +169,7 @@ void comm_handler_store_frame(comm_frame frame) {
     //if we lose the frame, let em know
     else {
         //printf("wasted frame: beyond transmission buffer size\n");
+        //_delay_ms(100);
     } 
 }
 
@@ -225,8 +226,8 @@ uint8_t comm_handler_tick() {
                 currFrame.id--;
                 frameBuffferCount++;
                 comm_handler_store_frame(currFrame);
-                // printf("passed it on! new frameBufferCount: %d\n", frameBuffferCount);
-                // _delay_ms(100);
+                //printf("passed it on! new frameBufferCount: %d\n", frameBuffferCount);
+                //_delay_ms(100);
 
             }
         }
