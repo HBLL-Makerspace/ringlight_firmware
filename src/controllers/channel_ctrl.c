@@ -169,7 +169,9 @@ static void chn_ctrl_update_chn(uint8_t channel) {
         uint8_t start = (LEDS_PER_GROUP * channel);
         for (uint8_t i = 0; i < LEDS_PER_GROUP; i++) {
             WS2812_set_pixel_color_RGB(start + i, r, g, b);
-            WS2812_set_pixel_color_RGB(start + i + CHANNEL_OFFSET, r, g, b);
+
+            //FIXME: uncomment below once new boards come in to test
+            //WS2812_set_pixel_color_RGB(start + i + CHANNEL_OFFSET, r, g, b);
         }
     }
 }

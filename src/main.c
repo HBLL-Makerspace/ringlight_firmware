@@ -41,7 +41,15 @@ int main(void) {
         // _delay_ms(1000);
 
 
-        //chn_ctrl_test_suite_run_all();
+        //test for all I/O minus input.
+        // chn_ctrl_test_suite_run_all();
+        // uint8_t cmd1[] = {0,1};
+        // cmd_set_shutter_focus_process(cmd1);
+        // printf("serial test\n");
+        // _delay_ms(100);
+
+
+
 
         // cmd_set_shutter_focus_process(0);
         // cmd_set_shutter_focus_process(&led);
