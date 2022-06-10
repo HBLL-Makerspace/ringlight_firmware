@@ -80,7 +80,7 @@ bool comm_handler_byte_sender(){
         // printf("* \n");
         // _delay_ms(100);
         //IMPORTANT: if debugging with serial, change start byte from 255 to 0 for utf-8 to decode correctly.
-        const uint8_t start_byte = 0;
+        const uint8_t start_byte = 255;
         const uint8_t end_byte = 0;
 
         

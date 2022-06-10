@@ -5,6 +5,32 @@
 #include<port.h>
 #include<controllers/focus_shutter_ctrl.h>
 #include<util/delay.h>
+#include<commands/cmd_set_chn_color_rgb.h>
+
+
+
+
+static void Focus(bool delay){
+    //turn on LED.Be sure to correct for each channel.
+    uint8_t focusColor[] = {1,200,65,20};
+    cmd_set_chn_color_rgb_process(focusColor);
+    FS1_set_level(1);
+    if(true){
+        _delay_ms(1000);
+    }
+    else{
+        _delay_ms(600);
+    }
+    FS1_set_level(0);
+    uint8_t lightsOff[] = {1,0,0,0};
+    cmd_set_chn_color_rgb_process(lightsOff);
+}
+
+static void Shutter(){
+    FS2_set_level(1);
+    _delay_ms(300);
+    FS2_set_level(0);
+}
 
 void focus_shutter_led_test(uint8_t focus, uint8_t shutter){
     
@@ -19,9 +45,7 @@ void focus_shutter_led_test(uint8_t focus, uint8_t shutter){
 
      //focus only
     if(focus && !shutter){
-        FS1_set_level(1);
-        _delay_ms(1000);
-        FS1_set_level(0);
+        Focus(true);
         // printf("Focusing\n");
         // _delay_ms(100);
 
@@ -29,17 +53,14 @@ void focus_shutter_led_test(uint8_t focus, uint8_t shutter){
 
     //take a photo immediately
     else if(shutter && !focus){
-        FS1_set_level(1);
-        _delay_ms(600);
-        FS1_set_level(0);
-        FS2_set_level(1);
-        _delay_ms(300);
-        FS2_set_level(0);
+        Focus(false);
+        Shutter();
     }
 
     //autofocus and take a photo
     else if(shutter && focus){
-        ;
+        Focus(false);
+        Shutter();
     } 
 
     // //turns on both LEDs
