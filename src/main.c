@@ -42,7 +42,7 @@ int main(void) {
 
 
         //test for all I/O minus input.
-        // chn_ctrl_test_suite_run_all();
+        //chn_ctrl_test_suite_run_all();
         // uint8_t cmd1[] = {0,1};
         // cmd_set_shutter_focus_process(cmd1);
         // printf("serial test\n");
@@ -60,7 +60,7 @@ int main(void) {
         // This is the main loop, it should be very short. Cannot use printf in the loop.
         comm_handler_tick();
 
-        //FIXME if there is a frame for ME to execute, do it
+        //FIXME if there is a frame for ME to execute, do it... note: Does this need to be pursued?
         if (comm_handler_this_has_frame()) {
             comm_frame frame = comm_handler_get_my_frame();
 

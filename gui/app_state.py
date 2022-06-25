@@ -159,6 +159,7 @@ class AppState(Subject):
         if self.dataToSend == 0:
             cmd = CmdSetChannelW(self.selectedRingLight, self.selectedChannel, max(max(whiteColor.red(), whiteColor.green()), whiteColor.blue()))
             self.sendCommand(cmd)
+
             cmd = CmdSetChannelRGB(self.selectedRingLight, self.selectedChannel, color.red(), color.green(), color.blue())
             self.sendCommand(cmd)
         elif self.dataToSend == 1:
@@ -176,6 +177,7 @@ class AppState(Subject):
             cmd = None
             if self.dataToSend == 0:
                 cmd = CmdSetChannelW(self.selectedRingLight, i, max(max(whiteColor.red(), whiteColor.green()), whiteColor.blue()))
+                #cmd = CmdSetChannelW(self.selectedRingLight, self.selectedChannel, 2)
                 self.sendCommand(cmd)
                 cmd = CmdSetChannelRGB(self.selectedRingLight, i, color.red(), color.green(), color.blue())
                 self.sendCommand(cmd)
@@ -185,7 +187,7 @@ class AppState(Subject):
             else:
                 cmd = CmdSetChannelW(self.selectedRingLight, i, max(max(whiteColor.red(), whiteColor.green()), whiteColor.blue()))
                 self.sendCommand(cmd)
-        #time.sleep(.1)
+        time.sleep(.1)
         cmd = CmdSetFocusShutter(self.selectedRingLight, int(self.focus_enabled[self.selectedRingLight]), int(self.shutter_enabled[self.selectedRingLight]))
         self.sendCommand(cmd)
 

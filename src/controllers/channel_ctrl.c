@@ -171,7 +171,7 @@ static void chn_ctrl_update_chn(uint8_t channel) {
             WS2812_set_pixel_color_RGB(start + i, r, g, b);
 
             //FIXME: uncomment below once new boards come in to test
-            //WS2812_set_pixel_color_RGB(start + i + CHANNEL_OFFSET, r, g, b);
+            WS2812_set_pixel_color_RGB(start + i + CHANNEL_OFFSET, r, g, b);
         }
     }
 }
