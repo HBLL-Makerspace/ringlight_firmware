@@ -9,7 +9,7 @@
 #include<util/delay.h>
 
 
-#define SIZE_OF_TRANSMISSION_BUFFER 10
+#define SIZE_OF_TRANSMISSION_BUFFER 30
 #define SIZE_OF_BYTE_BUFFER 16
 //start byte, ringlight id, command id, end byte
 #define BASE_TRANSMISSION_SIZE_OFFSET 4
@@ -83,21 +83,28 @@ bool comm_handler_byte_sender(){
         // printf("* \n");
         // _delay_ms(100);
         //IMPORTANT: if debugging with serial, change start byte from 255 to 0 for utf-8 to decode correctly.
-        const uint8_t start_byte = 0;
+        const uint8_t start_byte = 255;
         const uint8_t end_byte = 0;
 
-
-        TxByteBuffer[0] = 0;
+        TxByteBuffer[0] = end_byte;
 
         for(uint8_t i = command_get_from_id(currTransmissionFrame.cmd)->len; i > 0 ; i--){
-            TxByteBuffer[i] = currTransmissionFrame.data[command_get_from_id(currTransmissionFrame.cmd)->len - i];
+            TxByteBuffer[i] = (const uint8_t) currTransmissionFrame.data[command_get_from_id(currTransmissionFrame.cmd)->len - i];
+            // printf("%d\n", TxByteBuffer[i]);
+            // _delay_ms(100);
         }
 
-        TxByteBuffer[command_get_from_id(currTransmissionFrame.cmd)->len + 1] = currTransmissionFrame.cmd;
+        TxByteBuffer[command_get_from_id(currTransmissionFrame.cmd)->len + 1] = (const uint8_t) currTransmissionFrame.cmd;
+        // printf("%d\n",TxByteBuffer[command_get_from_id(currTransmissionFrame.cmd)->len + 1]);
+        // _delay_ms(100);
 
-        TxByteBuffer[command_get_from_id(currTransmissionFrame.cmd)->len + 2] = currTransmissionFrame.id;
+        TxByteBuffer[command_get_from_id(currTransmissionFrame.cmd)->len + 2] = (const uint8_t) currTransmissionFrame.id;
+        // printf("%d\n",TxByteBuffer[command_get_from_id(currTransmissionFrame.cmd)->len + 3]);
+        // _delay_ms(100);
 
-        TxByteBuffer[command_get_from_id(currTransmissionFrame.cmd)->len + 3] = 0xff;
+        TxByteBuffer[command_get_from_id(currTransmissionFrame.cmd)->len + 3] = start_byte;
+        // printf("%d\n",TxByteBuffer[command_get_from_id(currTransmissionFrame.cmd)->len + 3]);
+        // _delay_ms(100);
 
         return true;
     }
@@ -256,15 +263,17 @@ uint8_t comm_handler_tick() {
     //if ready to transmit and you have something to transmit, do it. Note: may need to be an else if
     if(currTransmissionLength == 0 && (frameBuffferCount > 0)){
         //transmit using the WriteAByte() function
-        //printf("sending frames\n");
-        //_delay_ms(100);
+        // printf("Transmission length is 0 and we have stuff to send!\n");
+        // _delay_ms(100);
         comm_handler_send_frame();
     }
 
     if(USART_is_tx_ready() && currTransmissionLength > 0){
-        //printf("CurrTransmissionLength at tx ready: %d/n", currTransmissionLength);
-        //_delay_ms(100);
-        USART_write(TxByteBuffer[currTransmissionLength]);
+        //FIXME
+        printf("%x ", TxByteBuffer[currTransmissionLength]);
+        _delay_ms(100);
+        //USART_write(TxByteBuffer[currTransmissionLength]);
+
         currTransmissionLength--;
     }
 
