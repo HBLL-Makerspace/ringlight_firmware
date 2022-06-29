@@ -1,34 +1,22 @@
-/**
- * \file
- * \author Ben Brenkman
- * \date 29 June 2021
- *
- * Basic USART dirver.
- */
-
-#ifndef USART_H__
-#define USART_H__
-
-#ifndef UNIT_TEST
-#include <compiler.h>
-#else
-#include <stdbool.h>
+#include <drivers/usart.h>
 #include <stdint.h>
-#endif
-#include <clock_config.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#define RX_BUFFER_SIZE 8
+#define TX_BUFFER_SZIE 1
 
-#define USART_BAUD_RATE(BAUD_RATE) ((float)(F_CPU * 64 / (16 * (float)BAUD_RATE)) + 0.5)
+uint8_t usart_rx_buffer[RX_BUFFER_SIZE];
+uint8_t usart_tx_buffer[TX_BUFFER_SZIE];
+
+uint8_t usart_rx_buffer_index;
+uint8_t usart_tx_buffer_index;
 
 /**
  * \brief Initialize the USART interface.
  *
  * \return \c void
  */
-void USART_init(void);
+void USART_init(void) {
+}
 
 /**
  * \brief Enable the RX and TX in the USART interface.
@@ -37,7 +25,8 @@ void USART_init(void);
  *
  * \return void
  */
-void USART_enable(void);
+void USART_enable(void) {
+}
 
 /**
  * \brief Disables the USART interface.
@@ -47,14 +36,17 @@ void USART_enable(void);
  *
  * \return \c void
  */
-void USART_disable(void);
+void USART_disable(void) {
+}
 
 /**
  * \brief Get received data from the USART interface.
  *
  * \return Data from the data register in the USART interface
  */
-uint8_t USART_get_data(void);
+uint8_t USART_get_data(void) {
+  return 0;
+}
 
 /**
  * \brief Check if the USART can accept transmitt data.
@@ -63,7 +55,9 @@ uint8_t USART_get_data(void);
  * \retval false The USART can not transmitt data
  * \retval true The USART can transmitt data
  */
-bool USART_is_tx_ready(void);
+bool USART_is_tx_ready(void) {
+  return usart_tx_buffer_index == 0;
+}
 
 /**
  * \brief Check if the USART can receive data.
@@ -72,7 +66,9 @@ bool USART_is_tx_ready(void);
  * \retval false The USART can not receive data
  * \retval true The USART can receive data
  */
-bool USART_is_rx_ready(void);
+bool USART_is_rx_ready(void) {
+  return usart_rx_buffer_index > 0;
+}
 
 /**
  * \brief Check if USART data is transmitted
@@ -81,7 +77,9 @@ bool USART_is_rx_ready(void);
  * \retval true  Data is not completely shifted out of the shift register
  * \retval false Data completely shifted out if the USART shift register
  */
-bool USART_is_tx_busy(void);
+bool USART_is_tx_busy(void) {
+  return usart_tx_buffer_index;
+}
 
 /**
  * \brief Read one byte from the USART interface
@@ -90,7 +88,14 @@ bool USART_is_tx_busy(void);
  *
  * \return Data read from the USART interface
  */
-uint8_t USART_read(void);
+uint8_t USART_read(void) {
+  if (usart_rx_buffer_index > 0) {
+    uint8_t val = usart_rx_buffer[usart_rx_buffer_index - 1];
+    usart_rx_buffer_index--;
+    return val;
+  }
+  return 0;
+}
 
 /**
  * \brief Write one byte to the USART interface
@@ -101,10 +106,7 @@ uint8_t USART_read(void);
  *
  * \return \c void
  */
-void USART_write(const uint8_t data);
-
-#ifdef __cplusplus
+void USART_write(const uint8_t data) {
+  usart_tx_buffer[0] = data;
+  usart_tx_buffer_index = 1;
 }
-#endif
-
-#endif
