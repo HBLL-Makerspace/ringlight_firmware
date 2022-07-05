@@ -28,7 +28,7 @@ extern "C" {
  * 
  * LED test
  */
-void focus_shutter_led_test(uint8_t focus, uint8_t shutter);
+void focus_shutter_led(uint8_t focus, uint8_t shutter);
 
 #ifdef __cplusplus
 }

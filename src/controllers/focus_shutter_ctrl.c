@@ -8,8 +8,6 @@
 #include<commands/cmd_set_chn_color_rgb.h>
 
 
-
-
 static void Focus(bool delay){
     //turn on LED.Be sure to correct for each channel.
     uint8_t focusColor[] = {1,200,65,20};
@@ -32,7 +30,7 @@ static void Shutter(){
     FS2_set_level(0);
 }
 
-void focus_shutter_led_test(uint8_t focus, uint8_t shutter){
+void focus_shutter_led(uint8_t focus, uint8_t shutter){
     
     //sets both pins as outputs if trues
     FS1_set_dir(1);
@@ -44,24 +42,28 @@ void focus_shutter_led_test(uint8_t focus, uint8_t shutter){
     // _delay_ms(100);
 
      //focus only
-    if(focus && !shutter){
-        Focus(true);
-        // printf("Focusing\n");
-        // _delay_ms(100);
+    if(focus){
+
+        FS1_set_level(1);
+
+
+    }
+
+    else {
+
+        FS1_set_level(0);
 
     }
 
     //take a photo immediately
-    else if(shutter && !focus){
-        Focus(false);
-        Shutter();
-    }
+    if(shutter){
 
-    //autofocus and take a photo
-    else if(shutter && focus){
-        Focus(false);
-        Shutter();
-    } 
+        FS2_set_level(1);
+        _delay_ms(50);
+        FS2_set_level(0);
+
+
+    }
 
     // //turns on both LEDs
     // FS2_set_level(focus);

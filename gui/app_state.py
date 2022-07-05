@@ -150,7 +150,7 @@ class AppState(Subject):
             #print(type(cmd[i]))
             self.terminal.write(i.to_bytes(1, "little"))
             #time.sleep(0.05)
-        #print(cmd.command_to_binary())
+        print(cmd.command_to_binary())
 
     def sendDataSelectedChannel(self):
         color = self.colors[self.selectedRingLight][self.selectedChannel]

@@ -259,7 +259,7 @@ uint8_t comm_handler_tick() {
     //  printf("Transmission length is 0 and we have stuff to send!\n");
     //  _delay_ms(100);
     comm_handler_send_frame();
-    printf("currentTransmissionLength: %d\n", currTransmissionLength);
+    //printf("currentTransmissionLength: %d\n", currTransmissionLength);
   }
 
   if (USART_is_tx_ready() && currTransmissionLength > 0) {
